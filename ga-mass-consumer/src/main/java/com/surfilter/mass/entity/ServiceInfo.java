@@ -1,5 +1,7 @@
 package com.surfilter.mass.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * 场所信息缓存实体
  * 
@@ -65,8 +67,7 @@ public class ServiceInfo {
 
 	@Override
 	public String toString() {
-		return "ServiceInfo [serviceType=" + serviceType + ",policeCode=" + policeCode + ",provinceCode=" + provinceCode
-				+ ",cityCode=" + cityCode + ",areaCode=" + areaCode + "]";
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

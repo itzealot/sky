@@ -59,18 +59,19 @@ public class RedisDupRemover implements DuplicateRemover {
 
 			for (int i = 0; i < size; i++) { // 根据行健初始化
 				AlarmInfo alarmInf = datas.get(i);
-				String combineKey = buffer.append(alarmInf.getMatchType()).append(SPLITER)
-						.append(alarmInf.getMatchValue()).append(SPLITER).append(alarmInf.getServiceCode())
-						.append(SPLITER).append(alarmInf.getStoreId()).toString();
+				String combineKey = null;
 
-				buffer.setLength(0);
-
-				// 如果是重点人，则按人(zdPersonId + serviceCode)排重，而不是身份排重
+				// 如果是ZDR，则按人(zdPersonId + serviceCode)排重，而不是身份排重
 				if (!ImcaptureUtil.isEmpty(alarmInf.getZdPersonId())) {
 					combineKey = buffer.append(alarmInf.getZdPersonId()).append(SPLITER)
 							.append(alarmInf.getServiceCode()).toString();
-					buffer.setLength(0);
+				} else {
+					combineKey = buffer.append(alarmInf.getMatchType()).append(SPLITER).append(alarmInf.getMatchValue())
+							.append(SPLITER).append(alarmInf.getServiceCode()).append(SPLITER)
+							.append(alarmInf.getStoreId()).toString();
 				}
+
+				buffer.setLength(0);
 
 				combineKeys.add(combineKey);
 			}

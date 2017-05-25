@@ -26,12 +26,10 @@ public class SkyExecutor implements SkyRunnable {
 					this.wait();
 				}
 
-				while (!queue.isEmpty()) {
-					SkyRunnable runnable = queue.poll();
+				SkyRunnable runnable = queue.poll();
 
-					if (runnable != null) {
-						runnable.run();
-					}
+				if (runnable != null) {
+					runnable.run();
 				}
 			}
 		} catch (Throwable e) {

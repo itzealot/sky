@@ -42,13 +42,12 @@ public class ServiceEngine {
 	private final JedisTemplate jedisTemplate;
 	private Timer zdTimer;
 	private AlarmInfoAnalysis analysis;
-	private KeyPerDao keyPerDao;
 	private ServiceInfoHelper serviceInfoHelper;
+	private Timer zdCleanTimer;
 
 	private ServiceEngine() {
 		this.conf = new MassConfiguration();
 		this.context = new ImcaptureContext(this.conf);
-		this.keyPerDao = KeyPerDaoImpl.getInstance(this.context.getJdbcConfig());
 
 		/** 初始化解析器 */
 		MsgParserHolder.getInstance(this.context.getConf()) // 获取单例
@@ -68,17 +67,18 @@ public class ServiceEngine {
 		this.serviceInfoHelper = ServiceInfoHelper.getInstance(this.conf);
 		this.serviceInfoHelper.getServiceInfo();
 
+		/** 初始化 ACHelper */
+		ACHelper.getInstance(context.getInt(ImcaptureConsts.MATCH_INIT_INTERVAL, 5))
+				.getAC(new KeyPerDaoImpl(this.context.getJdbcConfig()));
+
 		/** 初始化生产者持有类 */
 		this.dataProvider = DataProviderHandler.getInstance(this.context);
-
-		/** 初始化 ACHelper */
-		ACHelper.getInstance(context.getInt(ImcaptureConsts.MATCH_INIT_INTERVAL, 5));
 
 		/** 获取过滤信息系统 */
 		String queryInterval = this.serviceInfoHelper.getMacFilterMap().get(ImcaptureConsts.ALARM_INFO_QUERY_INTERVAL);
 		int interval = ImcaptureUtil.getValue(queryInterval, 20);
 
-		this.analysis = new AlarmInfoAnalysis(this.keyPerDao);
+		this.analysis = new AlarmInfoAnalysis(new KeyPerDaoImpl(this.context.getJdbcConfig()));
 		LOG.info("analysis alarm info logs params, interval:{} min", interval);
 
 		/** 清除前天的redis排重key */
@@ -107,11 +107,25 @@ public class ServiceEngine {
 						counts, seconds, interval);
 
 				long start = System.currentTimeMillis();
-				analysis.alalysis(map, interval, seconds, counts);
+				int stayLimitSeconds = conf.getInt(ImcaptureConsts.CLUSTER_ALARM_STAY_LIMIT_SECONDS, 3600);
+				analysis.alalysis(map, interval, seconds, counts, stayLimitSeconds);
 				long spend = (System.currentTimeMillis() - start) / 1000L;
 				LOG.info("finish analysis alarm info logs, spends:{}s", spend);
 			}
 		}, 3 * 60 * 1000L, interval * 60 * 1000);
+
+		this.zdCleanTimer = new Timer();
+		this.zdCleanTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				KeyPerDao dao = new KeyPerDaoImpl(context.getJdbcConfig());
+				int cleanDays = conf.getInt(ImcaptureConsts.ZD_PERSON_ALARM_INFO_CLEAN_DAYS, 5);
+				if (cleanDays < 1) { // 非法参数，则默认删除5天内的数据
+					cleanDays = 5;
+				}
+				dao.cleanZdPersonAlarmInfo(cleanDays);
+			}
+		}, 1 * 60 * 1000L, 24 * 60 * 60 * 1000);
 	}
 
 	/**

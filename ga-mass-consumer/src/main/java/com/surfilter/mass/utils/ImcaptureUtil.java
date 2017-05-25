@@ -1,15 +1,25 @@
 package com.surfilter.mass.utils;
 
-import com.surfilter.mass.conf.UserType;
-import com.surfilter.mass.entity.AlarmInfo;
-import com.surfilter.mass.entity.ClusterAlarmResult;
-import com.surfilter.mass.entity.ServiceInfo;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.Map.Entry;
+import com.surfilter.mass.conf.UserType;
+import com.surfilter.mass.entity.AlarmInfo;
+import com.surfilter.mass.entity.ClusterAlarmResult;
+import com.surfilter.mass.entity.ClusterAlarmResultQueryObject;
+import com.surfilter.mass.entity.ServiceInfo;
 
 /**
  * cluster alarm info analysis util
@@ -25,6 +35,7 @@ public final class ImcaptureUtil {
 	private static final String MESSAGE_SP = ";";
 	private static final String SPECIAL_SP = "#"; // name#certCode
 	private static final String SPLITER = ",";
+	private static final String FILED_SP_REGEX = "\\|";
 
 	public static long abs(long val) {
 		return val >= 0 ? val : -val;
@@ -308,53 +319,6 @@ public final class ImcaptureUtil {
 	}
 
 	/**
-	 * 从多个报警信息构建报警团伙信息
-	 * 
-	 * @param serviceInfoMap
-	 * @param alarms
-	 * @return
-	 */
-	public static ClusterAlarmResult extractClusterAlarmResult(Map<String, ServiceInfo> serviceInfoMap,
-			List<AlarmInfo> alarms, int counts) {
-		String serviceCode = alarms.get(0).getServiceCode();
-		ServiceInfo info = serviceInfoMap.get(serviceCode);
-		if (info == null) {
-			LOG.error("error serviceInfo where serviceCode={} in serviceInfoMap", serviceCode);
-			return null;
-		}
-		String policeCode = info.getPoliceCode(); // 获取policeCode
-		long firstAlarmTime = Long.MAX_VALUE; // min value in
-		long lastAlarmTime = 0L; // max
-
-		StringBuffer buffer = new StringBuffer(64);
-		for (int i = 0, len = alarms.size(); i < len; i++) {
-			AlarmInfo a = alarms.get(i);
-			if (firstAlarmTime > a.getStartTime()) {
-				firstAlarmTime = a.getStartTime();
-			}
-
-			if (lastAlarmTime < a.getEndTime()) {
-				lastAlarmTime = a.getEndTime();
-			}
-
-			if (lastAlarmTime < a.getStartTime()) {
-				lastAlarmTime = a.getStartTime();
-			}
-
-			if (!buffer.toString().contains("" + a.getZdPersonId())) {
-				buffer.append(a.getZdPersonId()).append(SPLITER);
-			}
-		}
-
-		String result = buffer.deleteCharAt(buffer.length() - 1).toString();
-		if (result.split(",").length < counts) {
-			return null;
-		}
-		return new ClusterAlarmResult(serviceCode, info.getProvinceCode(), info.getCityCode(), info.getAreaCode(),
-				policeCode, result, firstAlarmTime, lastAlarmTime, Integer.parseInt(alarms.get(0).getZdType()));
-	}
-
-	/**
 	 * 分析报警日志
 	 * 
 	 * @param alarmInfos
@@ -381,20 +345,37 @@ public final class ImcaptureUtil {
 		String areaCode = info.getAreaCode();
 		String policeCode = info.getPoliceCode(); // 获取policeCode
 
+		StringBuffer buffer = new StringBuffer(48);
+
+		String firstGangTime = buffer.append(first.getStartTime()).append(FILED_SP)
+				.append(fetchMaxTime(first.getStartTime(), first.getEndTime())).toString();
+		buffer.setLength(0);
 		cs.add(new ClusterAlarmResult(serviceCode, provinceCode, cityCode, areaCode, policeCode,
-				first.getZdPersonId() + "", first.getStartTime(), first.getEndTime(), zdType));
+				String.valueOf(first.getZdPersonId()), first.getStartTime(), first.getEndTime(), zdType,
+				firstGangTime));
+
 		i++; // 值为 1
 		while (i < size) {
 			AlarmInfo a = alarmInfos.get(i);
-			String zdId = a.getZdPersonId() + "";
+			String zdId = String.valueOf(a.getZdPersonId());
 
 			boolean flag = true;
 			for (ClusterAlarmResult r : cs) { // 遍历团伙成员集合，把当前的成员合并到团伙中
 				String gangList = r.getGangList();
+				int index = indexOf(gangList.split(SPLITER), zdId);
 
-				if (gangList.contains(zdId) || distanceIsBetween(r, a, seconds)) { // 当前报警信息与该团伙距离相符合
-					if (!gangList.contains(zdId)) { // 不包含则追加
-						r.setGangList(gangList + "," + zdId);
+				if (index != -1 || distanceIsBetween(r, a, seconds)) { // 当前报警信息与该团伙距离相符合
+					if (index == -1) { // 不包含对应的zdPersonId则追加
+						// gangList追加
+						r.setGangList(buffer.append(gangList).append(SPLITER).append(zdId).toString());
+						buffer.setLength(0);
+
+						// gangTime追加
+						r.setGangTime(buffer.append(r.getGangTime()).append(SPLITER).append(a.getStartTime())
+								.append(FILED_SP).append(fetchMaxTime(a.getStartTime(), a.getEndTime())).toString());
+						buffer.setLength(0);
+					} else { // 存在，更新对应zdPersonId所在位置的 gangTime
+						updateGangTime(r, a, index);
 					}
 
 					updateTime(r, a); // 更新时间
@@ -404,8 +385,11 @@ public final class ImcaptureUtil {
 			}
 
 			if (flag) {// 新增一个团伙并加入团伙列表
+				String gangTime = buffer.append(a.getStartTime()).append(FILED_SP)
+						.append(fetchMaxTime(a.getStartTime(), a.getEndTime())).toString();
+				buffer.setLength(0);
 				cs.add(new ClusterAlarmResult(serviceCode, provinceCode, cityCode, areaCode, policeCode,
-						a.getZdPersonId() + "", a.getStartTime(), a.getEndTime(), zdType));
+						String.valueOf(a.getZdPersonId()), a.getStartTime(), a.getEndTime(), zdType, gangTime));
 			}
 
 			i++;
@@ -414,8 +398,68 @@ public final class ImcaptureUtil {
 		return cs;
 	}
 
+	private static Long fetchMaxTime(Long startTime, Long endTime) {
+		return endTime == null || startTime >= endTime ? startTime : endTime;
+	}
+
+	/**
+	 * 根据zdPersonId更新报警团伙指定位置的 gangTime
+	 * 
+	 * @param r
+	 * @param a
+	 */
+	private static void updateGangTime(ClusterAlarmResult r, AlarmInfo a, int index) {
+		String[] gangTime = r.getGangTime().split(SPLITER);
+		StringBuffer buffer = new StringBuffer(80);
+
+		for (int i = 0; i < index; i++) {
+			buffer.append(gangTime[i]);
+			buffer.append(SPLITER);
+		}
+
+		String[] times = gangTime[index].split(FILED_SP_REGEX);
+
+		long startTime = Long.valueOf(times[0]);
+		if (startTime > a.getStartTime() && a.getStartTime() > 1L) {
+			startTime = a.getStartTime();
+		}
+
+		long endTime = Long.valueOf(times[1]);
+
+		if (endTime < a.getStartTime()) {
+			endTime = a.getStartTime();
+		}
+
+		if (endTime < a.getEndTime()) {
+			endTime = a.getEndTime();
+		}
+
+		buffer.append(startTime).append(FILED_SP).append(endTime).append(SPLITER);
+
+		for (int i = index + 1; i < gangTime.length; i++) {
+			buffer.append(gangTime[i]);
+			buffer.append(SPLITER);
+		}
+		r.setGangTime(buffer.deleteCharAt(buffer.length() - 1).toString());
+	}
+
+	private static int indexOf(String[] ids, String id) {
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i].equals(id)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * 更新报警团伙的首次发现时间及最晚发现时间
+	 * 
+	 * @param r
+	 * @param a
+	 */
 	private static void updateTime(ClusterAlarmResult r, AlarmInfo a) {
-		if (r.getFirstAlarmTime() > a.getStartTime() && a.getStartTime() > 0L) {
+		if (r.getFirstAlarmTime() > a.getStartTime() && a.getStartTime() > 1L) {
 			r.setFirstAlarmTime(a.getStartTime());
 		}
 
@@ -426,89 +470,6 @@ public final class ImcaptureUtil {
 		if (r.getLastAlarmTime() < a.getStartTime()) {
 			r.setLastAlarmTime(a.getStartTime());
 		}
-	}
-
-	public static Set<ClusterAlarmResult> analysisAlarmInfosBak(List<AlarmInfo> alarmInfos,
-			Map<String, ServiceInfo> serviceInfoMap, long seconds, int counts) {
-		Set<ClusterAlarmResult> clusters = new TreeSet<>();
-
-		int size = alarmInfos.size();
-		for (int i = 0; i < size; i++) {
-			List<AlarmInfo> alarmsI = new ArrayList<AlarmInfo>(); // 团伙成员
-			AlarmInfo aI = alarmInfos.get(i);
-			alarmsI.add(aI);
-
-			for (int j = 0; j < size; j++) {
-				AlarmInfo aJ = alarmInfos.get(j);
-
-				if (aI.getZdPersonId() != aJ.getZdPersonId() && !alarmsI.contains(aJ)
-						&& distanceIsBetween(aI, aJ, seconds)) { // 不是同一个人且在时间范围内
-					alarmsI.add(aJ);
-				}
-
-				if (aI.getZdPersonId() == aJ.getZdPersonId()) { // 是同一个人，则更新时间信息
-					updateTime(aJ, aI);
-				}
-
-				if (alarmsI.contains(aJ)) { // 相同报警信息则更新时间
-					updateTime(aJ, alarmInfos.get(alarmsI.indexOf(aJ)));
-				}
-			}
-
-			if (alarmsI.size() >= counts) { // 团伙人数达到指定范围内，构建团伙成员信息
-				ClusterAlarmResult result = extractClusterAlarmResult(serviceInfoMap, alarmsI, counts);
-
-				if (result != null) {
-					if (!clusters.contains(result)) { // 是否是存在相同团伙
-						clusters.add(result);
-					} else { // 存在相同团伙，则合并
-						mergeClusterAlarmResult(clusters, result);
-					}
-				}
-			} else {
-				alarmsI.clear();
-				alarmsI = null;
-			}
-		}
-
-		return clusters;
-	}
-
-	private static void mergeClusterAlarmResult(Set<ClusterAlarmResult> clusters, ClusterAlarmResult src) {
-		Iterator<ClusterAlarmResult> it = clusters.iterator();
-
-		while (it.hasNext()) {
-			ClusterAlarmResult dst = it.next();
-
-			if (dst.equals(src)) { // 相同团伙，时间与gangList 合并
-				mergeClusterAlarmResult(src, dst);
-			}
-		}
-	}
-
-	private static void mergeClusterAlarmResult(ClusterAlarmResult src, ClusterAlarmResult dst) {
-		// 时间合并
-		long firstAlarmTime = dst.getFirstAlarmTime();
-		long lastAlarmTime = dst.getLastAlarmTime();
-
-		if (src.getFirstAlarmTime() < firstAlarmTime) {
-			firstAlarmTime = src.getFirstAlarmTime();
-		}
-
-		if (lastAlarmTime < src.getFirstAlarmTime()) {
-			lastAlarmTime = src.getFirstAlarmTime();
-		}
-
-		if (lastAlarmTime < src.getLastAlarmTime()) {
-			lastAlarmTime = src.getLastAlarmTime();
-		}
-
-		if (dst.getGangList().length() < src.getGangList().length()) {
-			dst.setGangList(src.getGangList());
-		}
-
-		dst.setFirstAlarmTime(firstAlarmTime);
-		dst.setLastAlarmTime(lastAlarmTime);
 	}
 
 	/**
@@ -533,18 +494,23 @@ public final class ImcaptureUtil {
 			return clusterMap;
 		}
 
+		int sum = 0;
 		for (Entry<String, List<AlarmInfo>> entry : map.entrySet()) {
 			List<AlarmInfo> alarmInfos = entry.getValue();
 			if (alarmInfos != null && !alarmInfos.isEmpty()) {
-				List<ClusterAlarmResult> clusterAlarmResults = ImcaptureUtil.analysisAlarmInfos(alarmInfos,
-						serviceInfoMap, seconds);
+				List<ClusterAlarmResult> clusterAlarmResults = analysisAlarmInfos(alarmInfos, serviceInfoMap, seconds);
 				if (clusterAlarmResults != null && clusterAlarmResults.size() > 0) {
 					Set<ClusterAlarmResult> results = mergeClusterAlarmResult(clusterAlarmResults, counts);
 					if (results != null && results.size() > 0) {
+						sum += results.size();
 						clusterMap.put(entry.getKey(), results);
 					}
 				}
 			}
+		}
+
+		if (sum > 0) {
+			LOG.info("Total analysis cluster:{}", sum);
 		}
 
 		return clusterMap;
@@ -559,48 +525,23 @@ public final class ImcaptureUtil {
 	public static Set<ClusterAlarmResult> mergeClusterAlarmResult(List<ClusterAlarmResult> clusterAlarmResults,
 			int counts) {
 		Set<ClusterAlarmResult> results = new HashSet<>();
-		StringBuffer buffer = new StringBuffer(64);
+		StringBuffer buffer = new StringBuffer(80);
 
 		for (ClusterAlarmResult c : clusterAlarmResults) {
-			if (c.getGangList().split(",").length >= counts) {
-				String[] arrays = c.getGangList().split(",");
-				Arrays.sort(arrays);
-				c.setGangList(join(arrays, buffer));
+			String[] gangList = c.getGangList().split(SPLITER);
+
+			if (gangList.length >= counts) {
+				String[] gangTime = c.getGangTime().split(SPLITER);
+				sortAsc(gangList, gangTime);
+				c.setGangList(join(gangList, buffer));
+				c.setGangTime(join(gangTime, buffer));
+				c.setClusterTime((int) (c.getLastAlarmTime() - c.getFirstAlarmTime()));
+
 				results.add(c);
 			}
 		}
 
 		return results;
-	}
-
-	public static boolean hasSameGangList(String[] gs, String ganglist) {
-		for (int i = 0, lenI = gs.length; i < lenI; i++) {
-			if (ganglist.contains(gs[i])) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * 合并 gangList
-	 * 
-	 * @param gs
-	 * @param gangList
-	 * @return
-	 */
-	public static String joinGangList(String[] gs, String gangList) {
-		StringBuffer buffer = new StringBuffer(64);
-		buffer.append(gangList);
-
-		for (int i = 0, lenI = gs.length; i < lenI; i++) {
-			if (!gangList.contains(gs[i])) {
-				buffer.append(gs[i]).append(SPLITER);
-			}
-		}
-
-		return buffer.deleteCharAt(buffer.length() - 1).toString();
 	}
 
 	public static String join(String[] arrays, StringBuffer buffer) {
@@ -630,7 +571,7 @@ public final class ImcaptureUtil {
 			bigGangList = gangListB;
 		}
 
-		String[] small = smallGangList.split(",");
+		String[] small = smallGangList.split(SPLITER);
 		for (int i = 0, len = small.length; i < len; i++) {
 			if (!bigGangList.contains(small[i])) {
 				return false;
@@ -657,6 +598,75 @@ public final class ImcaptureUtil {
 				|| ("-1".equals(arrays[4]) && "true".equals(macFilterMap.get("mass_filter_power_negative_one")))
 				|| ("0".equals(arrays[4]) && !"0".equals(arrays[3])
 						&& "true".equals(macFilterMap.get("mass_filter_power_zero")));
+	}
+
+	/**
+	 * sort gangList and gangTime
+	 * 
+	 * @param gangList
+	 * @param gangTime
+	 */
+	public static void sortAsc(String[] gangList, String[] gangTime) {
+		for (int i = 0; i < gangList.length; i++) {
+			for (int j = i + 1; j < gangList.length; j++) {
+				long val1 = Long.valueOf(gangList[i]);
+				long val2 = Long.valueOf(gangList[j]);
+
+				if (val1 > val2) {
+					String temp = gangList[i];
+					gangList[i] = gangList[j];
+					gangList[j] = temp;
+
+					temp = gangTime[i];
+					gangTime[i] = gangTime[j];
+					gangTime[j] = temp;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 合并 gangTime
+	 * 
+	 * @param obj
+	 * @param r
+	 * @return
+	 */
+	public static String mergeGangTime(ClusterAlarmResultQueryObject obj, ClusterAlarmResult r, int stayLimitSeconds) {
+		if (isEmpty(obj.getGangTime())) {
+			return r.getGangTime();
+		}
+
+		String[] oldGangTime = obj.getGangTime().split(SPLITER);
+		String[] gangTime = r.getGangTime().split(SPLITER);
+
+		if (oldGangTime.length != gangTime.length) {
+			LOG.warn("old gang_time from mysql is not equal to current.");
+			return r.getGangTime();
+		}
+
+		StringBuffer buffer = new StringBuffer(128);
+
+		for (int i = 0; i < oldGangTime.length; i++) {
+			String[] oldTimes = oldGangTime[i].split(FILED_SP_REGEX);
+			String[] times = gangTime[i].split(FILED_SP_REGEX);
+
+			long oldStartTime = NumberUtil.parseLong(oldTimes[0]);
+			long oldEndTime = NumberUtil.parseLong(oldTimes[1]);
+
+			long startTime = NumberUtil.parseLong(times[0]);
+			long endTime = NumberUtil.parseLong(times[1]);
+
+			// 间隔时长在指定范围内
+			if (abs(startTime - oldEndTime) <= stayLimitSeconds) {
+				startTime = min(startTime, oldStartTime);
+				endTime = max(oldEndTime, endTime);
+			}
+
+			buffer.append(startTime).append(FILED_SP).append(endTime).append(SPLITER);
+		}
+
+		return buffer.deleteCharAt(buffer.length() - 1).toString();
 	}
 
 	private ImcaptureUtil() {

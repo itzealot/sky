@@ -13,29 +13,29 @@ import java.util.Set;
  * this is not exposed for public use.)
  * </p>
  */
-public class SearchResult<T>{
-  State<T> lastMatchedState;
-  byte[] bytes;
-  int lastIndex;
+public class SearchResult<T> {
+	State<T> lastMatchedState;
+	byte[] bytes;
+	int lastIndex;
 
-  SearchResult(State<T> s, byte[] bs, int i) {
-    this.lastMatchedState = s;
-    this.bytes = bs;
-    this.lastIndex = i;
-  }
+	SearchResult(State<T> s, byte[] bs, int i) {
+		this.lastMatchedState = s;
+		this.bytes = bs;
+		this.lastIndex = i;
+	}
 
-  /**
-   * Returns a list of the outputs of this match.
-   */
-  public Set<T> getOutputs() {
-    return lastMatchedState.getOutputs();
-  }
+	/**
+	 * Returns a list of the outputs of this match.
+	 */
+	public Set<T> getOutputs() {
+		return lastMatchedState.getOutputs();
+	}
 
-  /**
-   * Returns the index where the search terminates. Note that this is one byte
-   * after the last matching character.
-   */
-  public int getLastIndex() {
-    return lastIndex;
-  }
+	/**
+	 * Returns the index where the search terminates. Note that this is one byte
+	 * after the last matching character.
+	 */
+	public int getLastIndex() {
+		return lastIndex;
+	}
 }

@@ -33,12 +33,14 @@ public class MatchInfo {
 	private Long zdPersonId;
 	private String zdPersonMobile;
 	private String userName; // 姓名
-	private String zdType; // 重点人类型,如果有多种类型，用","拼接
+	private String zdType; // ZDR类型,如果有多种类型，用","拼接
+	private String creatorArea; // ZDR下发者及所属的省市区
 
 	public MatchInfo(Long storeId, Long macId, String matchType, String matchValue, String matchChildValue,
 			String alarmPhones, String alarmEmails, String serviceRange, String areaRange, Integer dayAlarmCount,
 			String serviceType, String alarmInterval, String certType, String certCode, String zdPersonId,
-			String zdPersonMobile, String userName, String zdType, boolean isPhoneAlarm, boolean isEmailAlarm) {
+			String zdPersonMobile, String userName, String zdType, boolean isPhoneAlarm, boolean isEmailAlarm,
+			String creatorArea) {
 		super();
 		this.storeId = storeId;
 		this.macId = macId;
@@ -60,6 +62,7 @@ public class MatchInfo {
 		this.zdType = zdType;
 		this.isPhoneAlarm = isPhoneAlarm;
 		this.isEmailAlarm = isEmailAlarm;
+		this.setCreatorArea(creatorArea);
 	}
 
 	public Long getStoreId() {
@@ -220,5 +223,13 @@ public class MatchInfo {
 
 	public void setEmailAlarm(boolean emailAlarm) {
 		isEmailAlarm = emailAlarm;
+	}
+
+	public String getCreatorArea() {
+		return creatorArea;
+	}
+
+	public void setCreatorArea(String creatorArea) {
+		this.creatorArea = creatorArea;
 	}
 }

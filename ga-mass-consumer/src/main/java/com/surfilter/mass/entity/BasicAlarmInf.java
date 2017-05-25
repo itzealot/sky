@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.surfilter.mass.entity;
 
 /**
@@ -14,9 +11,10 @@ public class BasicAlarmInf {
 	private String serviceCode;
 	private String xpoint;
 	private String ypoint;
-		
-	public BasicAlarmInf(){}
-	
+
+	public BasicAlarmInf() {
+	}
+
 	public BasicAlarmInf(Long startTime, Long endTime, String serviceCode, String xpoint, String ypoint) {
 		super();
 		this.startTime = startTime;
@@ -29,18 +27,23 @@ public class BasicAlarmInf {
 	public Long getStartTime() {
 		return startTime;
 	}
+
 	public void setStartTime(Long startTime) {
 		this.startTime = startTime;
 	}
+
 	public Long getEndTime() {
 		return endTime;
 	}
+
 	public void setEndTime(Long endTime) {
 		this.endTime = endTime;
 	}
+
 	public String getServiceCode() {
 		return serviceCode;
 	}
+
 	public void setServiceCode(String serviceCode) {
 		this.serviceCode = serviceCode;
 	}

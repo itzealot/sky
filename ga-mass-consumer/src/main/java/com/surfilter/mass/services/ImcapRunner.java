@@ -39,7 +39,7 @@ public class ImcapRunner implements Runnable {
 	public ImcapRunner(ImcaptureContext ctx) {
 		this.queue = ctx.getBlockQueue();
 		this.dpRemover = new RedisDupRemover(ctx);
-		this.keyPerDao = KeyPerDaoImpl.getInstance(ctx.getJdbcConfig());
+		this.keyPerDao = new KeyPerDaoImpl(ctx.getJdbcConfig());
 		this.dataMatcher = new AcDataMatcher(ctx, keyPerDao);
 	}
 
@@ -97,7 +97,7 @@ public class ImcapRunner implements Runnable {
 
 	/**
 	 * @param alarmInfs
-	 * @return 将重点人和布控人员分开，入到不同的数据库表
+	 * @return 将ZDR和布控人员分开，入到不同的数据库表
 	 */
 	public Map<String, List<AlarmInfo>> classifyAlarmInfo(Collection<AlarmInfo> alarmInfs) {
 		HashMap<String, List<AlarmInfo>> alarmInfoMap = new HashMap<>(2);

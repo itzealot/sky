@@ -1,5 +1,7 @@
 package com.surfilter.mass.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * zd person cluster alarm
  * 
@@ -18,9 +20,18 @@ public class ClusterAlarmResult {
 	private String gangList; // 团伙列表
 	private long firstAlarmTime; // 初次报警时间(团伙第一个人出现在场所的时间)
 	private long lastAlarmTime; // 最后报警时间(团伙成员最后一个人离开场所的时间)
-	private int zdType; // 重点人类型
+	private int zdType; // ZDR类型
+	private String gangTime; // 团伙中成员出现的时间列表(startTime|endTime)，多个使用逗号(',')分隔
+	private int clusterTime; // 聚集时长
 
 	public ClusterAlarmResult(String serviceCode, String provinceCode, String cityCode, String areaCode,
+			String policeCode, String gangList, long firstAlarmTime, long lastAlarmTime, int zdType, String gangTime) {
+		this(serviceCode, provinceCode, cityCode, areaCode, policeCode, gangList, firstAlarmTime, lastAlarmTime,
+				zdType);
+		this.gangTime = gangTime;
+	}
+
+	private ClusterAlarmResult(String serviceCode, String provinceCode, String cityCode, String areaCode,
 			String policeCode, String gangList, long firstAlarmTime, long lastAlarmTime, int zdType) {
 		super();
 		this.serviceCode = serviceCode;
@@ -106,11 +117,25 @@ public class ClusterAlarmResult {
 		this.zdType = zdType;
 	}
 
+	public String getGangTime() {
+		return gangTime;
+	}
+
+	public void setGangTime(String gangTime) {
+		this.gangTime = gangTime;
+	}
+
+	public int getClusterTime() {
+		return clusterTime;
+	}
+
+	public void setClusterTime(int clusterTime) {
+		this.clusterTime = clusterTime;
+	}
+
 	@Override
 	public String toString() {
-		return "ClusterAlarmResult [serviceCode=" + serviceCode + ", provinceCode=" + provinceCode + ",cityCode="
-				+ cityCode + ",areaCode=" + areaCode + ",policeCode=" + policeCode + ",gangList=" + gangList
-				+ ",firstAlarmTime=" + firstAlarmTime + ",lastAlarmTime=" + lastAlarmTime + ",zdType=" + zdType + "]";
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

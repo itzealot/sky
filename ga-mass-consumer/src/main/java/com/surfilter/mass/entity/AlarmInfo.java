@@ -1,8 +1,10 @@
 package com.surfilter.mass.entity;
 
-import com.surfilter.mass.utils.ImcaptureUtil;
-
 import java.util.Date;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+import com.surfilter.mass.utils.ImcaptureUtil;
 
 /**
  * 报警信息实体
@@ -20,8 +22,8 @@ public class AlarmInfo {
 	private Date createTime;
 
 	private String serviceCode;
-    private String xpoint;
-    private String ypoint;
+	private String xpoint;
+	private String ypoint;
 	private String apMac;
 	private String apSsid;
 
@@ -47,9 +49,10 @@ public class AlarmInfo {
 	private Long zdPersonId;
 	private String zdPersonMobile;
 	private String userName; // 姓名
-	private String zdType; // 重点人类型
+	private String zdType; // ZDR类型
+	private String creatorArea; // ZDR下发者及所属的省市区
 
-	public AlarmInfo(){
+	public AlarmInfo() {
 	}
 
 	public AlarmInfo(String matchValue, String matchType, String matchChildValue, Long id, Long storeId, Long startTime,
@@ -75,7 +78,6 @@ public class AlarmInfo {
 			Long endTime, String phoneAccount, String mailAccount, String serviceCode, String alarmType,
 			int dayAlarmCount, int alarmInterval, String certType, String certCode, Long zdPersonId,
 			String zdPersonMobile, String userName) {
-
 		this(matchValue, matchType, matchChildValue, id, storeId, startTime, endTime, phoneAccount, mailAccount,
 				serviceCode);
 		this.alarmType = alarmType;
@@ -88,20 +90,21 @@ public class AlarmInfo {
 		this.userName = userName;
 	}
 
-    public AlarmInfo(String matchValue, String matchType, String matchChildValue, Long id, Long storeId, Long startTime,
-                     Long endTime, String phoneAccount, String mailAccount, String serviceCode, String xpoint, String ypoint, String alarmType,
-                     int dayAlarmCount, int alarmInterval, String certType, String certCode, Long zdPersonId,
-                     String zdPersonMobile, String userName, String zdType, boolean isPhoneAlarm, boolean isEmailAlarm) {
-
-        this(matchValue, matchType, matchChildValue, id, storeId, startTime,
-                endTime, phoneAccount, mailAccount, serviceCode, alarmType, dayAlarmCount, alarmInterval,
-                certType, certCode, zdPersonId, zdPersonMobile, userName);
-        this.xpoint = xpoint;
-        this.ypoint = ypoint;
-        this.zdType = zdType;
+	public AlarmInfo(String matchValue, String matchType, String matchChildValue, Long id, Long storeId, Long startTime,
+			Long endTime, String phoneAccount, String mailAccount, String serviceCode, String xpoint, String ypoint,
+			String alarmType, int dayAlarmCount, int alarmInterval, String certType, String certCode, Long zdPersonId,
+			String zdPersonMobile, String userName, String zdType, boolean isPhoneAlarm, boolean isEmailAlarm,
+			String creatorArea) {
+		this(matchValue, matchType, matchChildValue, id, storeId, startTime, endTime, phoneAccount, mailAccount,
+				serviceCode, alarmType, dayAlarmCount, alarmInterval, certType, certCode, zdPersonId, zdPersonMobile,
+				userName);
+		this.xpoint = xpoint;
+		this.ypoint = ypoint;
+		this.zdType = zdType;
 		this.isPhoneAlarm = isPhoneAlarm;
 		this.isEmailAlarm = isEmailAlarm;
-    }
+		this.creatorArea = creatorArea;
+	}
 
 	public String getMatchValue() {
 		return matchValue;
@@ -304,12 +307,12 @@ public class AlarmInfo {
 			return true;
 		}
 
-		// 若重点人mobile不为空且相等则表明是同一个人
+		// 若ZDRmobile不为空且相等则表明是同一个人
 		if (!ImcaptureUtil.isEmpty(this.zdPersonMobile) && this.zdPersonMobile.equals(o.getZdPersonMobile())) {
 			return true;
 		}
 
-		// 若重点人 id 不为空且相等，则是同一个人
+		// 若ZDR id 不为空且相等，则是同一个人
 		if (!this.zdPersonId.equals(0L) && !this.zdPersonId.equals(-1L) && this.zdPersonId.equals(o.getZdPersonId())) {
 			return true;
 		}
@@ -317,36 +320,29 @@ public class AlarmInfo {
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		return "AlarmInfo [matchValue=" + matchValue + ",matchType=" + matchType + ",matchChildValue=" + matchChildValue
-				+ ",startTime=" + startTime + ",endTime=" + endTime + ",certType=" + certType + ",certCode=" + certCode
-				+ ",zdPersonId=" + zdPersonId + ",zdPersonMobile=" + zdPersonMobile + ",userName=" + userName + "]";
+	public String getXpoint() {
+		return xpoint;
 	}
 
-    public String getXpoint() {
-        return xpoint;
-    }
+	public void setXpoint(String xpoint) {
+		this.xpoint = xpoint;
+	}
 
-    public void setXpoint(String xpoint) {
-        this.xpoint = xpoint;
-    }
+	public String getYpoint() {
+		return ypoint;
+	}
 
-    public String getYpoint() {
-        return ypoint;
-    }
+	public void setYpoint(String ypoint) {
+		this.ypoint = ypoint;
+	}
 
-    public void setYpoint(String ypoint) {
-        this.ypoint = ypoint;
-    }
+	public String getZdType() {
+		return zdType;
+	}
 
-    public String getZdType() {
-        return zdType;
-    }
-
-    public void setZdType(String zdType) {
-        this.zdType = zdType;
-    }
+	public void setZdType(String zdType) {
+		this.zdType = zdType;
+	}
 
 	public boolean isPhoneAlarm() {
 		return isPhoneAlarm;
@@ -362,5 +358,18 @@ public class AlarmInfo {
 
 	public void setEmailAlarm(boolean emailAlarm) {
 		isEmailAlarm = emailAlarm;
+	}
+
+	public String getCreatorArea() {
+		return creatorArea;
+	}
+
+	public void setCreatorArea(String creatorArea) {
+		this.creatorArea = creatorArea;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

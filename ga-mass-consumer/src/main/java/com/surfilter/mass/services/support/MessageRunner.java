@@ -18,6 +18,7 @@ public class MessageRunner implements Runnable {
 
 	MessageRunner(KafkaStream<byte[], byte[]> partition, MessageExecutor executor) {
 		this.partition = partition;
+		this.executor = executor;
 	}
 
 	@Override

@@ -31,7 +31,8 @@ public class AlarmInfoAnalysis {
 	 * @param seconds
 	 * @param counts
 	 */
-	public void alalysis(Map<String, ServiceInfo> serviceInfoMap, int minutes, long seconds, int counts) {
+	public void alalysis(Map<String, ServiceInfo> serviceInfoMap, int minutes, long seconds, int counts,
+			int stayLimitSeconds) {
 		Map<String, List<AlarmInfo>> map = keyPerDao.getAlarmInfos(minutes + (int) (seconds / 60));
 		Map<String, Set<ClusterAlarmResult>> result = ImcaptureUtil.analysisCluster(map, serviceInfoMap, seconds,
 				counts);
@@ -39,7 +40,7 @@ public class AlarmInfoAnalysis {
 		map = null;
 
 		if (result.size() > 0) {
-			keyPerDao.saveClusterAlarmResults(result);
+			keyPerDao.saveClusterAlarmResults(result, stayLimitSeconds);
 			result.clear();
 		}
 		result = null;

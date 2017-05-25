@@ -42,10 +42,14 @@ import java.util.Iterator;
  * </ul>
  * 
  * jon: tweaked to be type generic
+ * 
+ * KMP算法是单模式串的字符匹配算法，AC自动机是多模式串的字符匹配算法
  */
 public class AhoCorasick<T> {
 
+	/** 字典树的根节点 */
 	private State<T> root;
+	/** 是否完成字段叔的构建标志 */
 	private volatile boolean prepared;
 
 	public AhoCorasick() {
@@ -57,17 +61,23 @@ public class AhoCorasick<T> {
 	 * Adds a new keyword with the given output. During search, if the keyword
 	 * is matched, output will be one of the yielded elements in
 	 * SearchResults.getOutputs().
+	 * 
+	 * 新增关键字及对应的输出结果
 	 */
 	public void add(byte[] keyword, T output) {
 		if (this.prepared)
 			throw new IllegalStateException("can't add keywords after prepare() is called");
 		State<T> lastState = this.root.extendAll(keyword);
+
+		// 叶子节点保存输出结果
 		lastState.addOutput(output);
 	}
 
 	/**
 	 * Prepares the automaton for searching. This must be called before any
 	 * searching().
+	 * 
+	 * 构建完成字段树，构造失败指针
 	 */
 	public void prepare() {
 		if (!this.prepared) {
@@ -76,12 +86,19 @@ public class AhoCorasick<T> {
 		}
 	}
 
+	/**
+	 * 是否完成构建字段树
+	 * 
+	 * @return
+	 */
 	public boolean isPrpared() {
 		return this.prepared;
 	}
 
 	/**
 	 * Starts a new search, and returns an Iterator of SearchResults.
+	 * 
+	 * 开始搜索
 	 */
 	public Iterator<SearchResult<T>> search(byte[] bytes) {
 		return new Searcher<T>(this, this.startSearch(bytes));
@@ -90,6 +107,10 @@ public class AhoCorasick<T> {
 	/**
 	 * DANGER DANGER: dense algorithm code ahead. Very order dependent.
 	 * Initializes the fail transitions of all states except for the root.
+	 * 
+	 * 构造下失败指针(层序遍历，使用队列)
+	 * 
+	 * 设这个节点上的字母为C，沿着他父亲的失败指针走，直到走到一个节点，他的儿子中也有字母为C的节点，然后把当前节点的失败指针指向那个字母也为C的儿子。如果一直走到了root都没找到，那就把失败指针指向root。
 	 */
 	private void prepareFailTransitions() {
 		Queue<T> q = new Queue<T>();
@@ -119,6 +140,8 @@ public class AhoCorasick<T> {
 	/**
 	 * Sets all the out transitions of the root to itself, if no transition yet
 	 * exists at this point.
+	 * 
+	 * 初始化根节点
 	 */
 	private void prepareRoot() {
 		for (int i = 0; i < 256; i++)
@@ -146,6 +169,10 @@ public class AhoCorasick<T> {
 	/**
 	 * Continues the search, given the initial state described by the
 	 * lastResult. Package protected.
+	 * 
+	 * 匹配过程分两种情况：
+	 * (1)当前字符匹配，表示从当前节点沿着树边有一条路径可以到达目标字符，此时只需沿该路径走向下一个节点继续匹配即可，目标字符串指针移向下个字符继续匹配；
+	 * (2)当前字符不匹配，则去当前节点失败指针所指向的字符继续匹配，匹配过程随着指针指向root结束。
 	 */
 	SearchResult<T> continueSearch(SearchResult<T> lastResult) {
 		byte[] bytes = lastResult.bytes;

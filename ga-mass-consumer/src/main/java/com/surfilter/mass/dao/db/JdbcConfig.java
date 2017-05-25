@@ -16,7 +16,6 @@ public class JdbcConfig {
 	private String url; // jdbc url
 	private String password;
 	private String userName;
-	private int focusCounts;
 
 	public static JdbcConfig instance = null;
 
@@ -32,21 +31,19 @@ public class JdbcConfig {
 						throw new IllegalArgumentException("jdbc.url, jdbc.userName or jdbc.password can't be empty");
 					}
 
-					instance = new JdbcConfig(ImcaptureConsts.DRIVER_CLASS_NAME, url, userName, password,
-							conf.getInt(ImcaptureConsts.FOCUS_MAC_INFO_COUNTS, 100));
+					instance = new JdbcConfig(ImcaptureConsts.DRIVER_CLASS_NAME, url, userName, password);
 				}
 			}
 		}
 		return instance;
 	}
 
-	private JdbcConfig(String driverClassName, String url, String userName, String password, int focusCounts) {
+	private JdbcConfig(String driverClassName, String url, String userName, String password) {
 		super();
 		this.driverClassName = driverClassName;
 		this.url = url;
 		this.password = password;
 		this.userName = userName;
-		this.focusCounts = focusCounts;
 	}
 
 	public String getDriverClassName() {
@@ -63,9 +60,5 @@ public class JdbcConfig {
 
 	public String getUserName() {
 		return userName;
-	}
-
-	public int getFocusCounts() {
-		return focusCounts;
 	}
 }

@@ -2,6 +2,7 @@ package com.surfilter.mass.utils;
 
 import static com.surfilter.mass.utils.ImcaptureUtil.isEmpty;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +28,18 @@ import junit.framework.TestCase;
 
 public class ImcaptureUtilTest extends TestCase {
 
+	// set the conf dir for test
+	private static MassConfiguration conf;
+	static {
+		System.setProperty("user.dir", "D:/code/fxj/ga-mass/ga-mass-nimcapture/src/main/assembly");
+		conf = new MassConfiguration();
+	}
+
 	String driverClassName = ImcaptureConsts.DRIVER_CLASS_NAME;
 	String url = "jdbc:mysql://192.168.0.112:3306/gacenter_shiju?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
 	String userName = "root";
 	String password = "surfilter1218";
-	JdbcConfig confg = JdbcConfig.getInstance(new MassConfiguration());
-	KeyPerDao keyPerDao = KeyPerDaoImpl.getInstance(confg);
+	JdbcConfig confg = JdbcConfig.getInstance(conf);
 
 	public void testAbs() {
 		System.out.println(ImcaptureUtil.abs(1l));
@@ -63,29 +70,43 @@ public class ImcaptureUtilTest extends TestCase {
 
 	public void testSaveClusterAlarmResults() {
 		Map<String, Set<ClusterAlarmResult>> map = new HashMap<>();
-
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		Set<ClusterAlarmResult> results = new HashSet<>();
 
 		long startAlarmTime = new Date().getTime() / 1000;
-		ClusterAlarmResult result = new ClusterAlarmResult("44030635511002", "440000", "440300", "440303", "44030611",
-				"A;B;C", startAlarmTime, startAlarmTime + 10000L, 1);
+		String serviceCode = "44030635511002";
+		ClusterAlarmResult result = new ClusterAlarmResult(serviceCode, "440000", "440300", "440303", "44030611",
+				"A;B;C", startAlarmTime, startAlarmTime + 300, 1,
+				"1494921005|1494922115,1494922015|1494922115,1494922105|1494922105");
+		result.setClusterTime(10);
 		results.add(result);
-		map.put("44030635511002", results);
+		map.put(serviceCode, results);
 
-		keyPerDao.saveClusterAlarmResults(map);
+		serviceCode = "44030635511003";
+
+		Set<ClusterAlarmResult> results2 = new HashSet<>();
+		results2.add(new ClusterAlarmResult("44030635511003", "440000", "440300", "440303", "44030611", "1;2;3",
+				startAlarmTime, startAlarmTime + 300L, 1,
+				"1494922005|1494922115,1494922005|1494922115,1494922105|1494922105"));
+		map.put(serviceCode, results2);
+
+		keyPerDao.saveClusterAlarmResults(map, 3600);
 	}
 
 	public void testGetAlarmInfos() {
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		System.out.println(keyPerDao.getAlarmInfos(300));
 	}
 
 	public void testAlarmInfoAnalysis() {
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		Map<String, ServiceInfo> serviceInfoMap = keyPerDao.querySerCodeType();
 
-		new AlarmInfoAnalysis(keyPerDao).alalysis(serviceInfoMap, 3 * 24 * 60, 120L, 3);
+		new AlarmInfoAnalysis(keyPerDao).alalysis(serviceInfoMap, 3 * 24 * 60, 120L, 3, 3600);
 	}
 
 	public void testAnalysisCluster() {
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		Map<String, ServiceInfo> serviceInfoMap = keyPerDao.querySerCodeType();
 		// 出现时间在指定时间范围内
 		System.out.println(ImcaptureUtil.analysisCluster(keyPerDao.getAlarmInfos(300), serviceInfoMap, 119L, 3));
@@ -175,6 +196,16 @@ public class ImcaptureUtilTest extends TestCase {
 		System.out.println(ImcaptureUtil.containsGangList("4577,4576,4572,4575,4574", "4574,4577,4572,4576,4575"));
 		System.out.println(ImcaptureUtil.containsGangList("4577,4576,4572,4575,4574", "4572,4576,4574,4577"));
 		System.out.println(ImcaptureUtil.containsGangList("4572,4576,4574,4577", "4577,4576,4572,4575,4574"));
+	}
+
+	public void testSortAsc() {
+		String[] ganlist = "1,3,2".split(",");
+		String[] gangTime = "10:10,12:00,11:00".split(",");
+
+		ImcaptureUtil.sortAsc(ganlist, gangTime);
+
+		System.out.println(Arrays.asList(ganlist));
+		System.out.println(Arrays.asList(gangTime));
 	}
 
 }

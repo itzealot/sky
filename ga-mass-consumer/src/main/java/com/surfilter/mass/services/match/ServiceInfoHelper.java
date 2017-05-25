@@ -78,6 +78,7 @@ public class ServiceInfoHelper {
 	}
 
 	private ServiceInfoHelper(MassConfiguration conf) {
+		Integer delay = getInt(conf, ImcaptureConsts.SERVICE_INFO_RELOAD_MINUTES, 60);
 		if (timer == null) {
 			timer = new Timer();
 			timer.scheduleAtFixedRate(new TimerTask() {
@@ -86,10 +87,10 @@ public class ServiceInfoHelper {
 					LOG.debug("service info load timer running...");
 					isInit = true;
 				}
-			}, 100, getInt(conf, ImcaptureConsts.SERVICE_INFO_RELOAD_MINUTES, 60) * 60 * 1000);
+			}, delay * 60 * 1000, delay * 60 * 1000);
 		}
 
-		this.keyPerDao = KeyPerDaoImpl.getInstance(JdbcConfig.getInstance(conf));
+		this.keyPerDao = new KeyPerDaoImpl(JdbcConfig.getInstance(conf));
 	}
 
 	public Integer getInt(MassConfiguration conf, String key, int defaultValue) {

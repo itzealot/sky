@@ -21,7 +21,7 @@ public class ACHelper {
 	private static Logger LOG = LoggerFactory.getLogger(ACHelper.class);
 	private static AhoCorasick<MatchInfo> acinfo = null;
 	private static final Object LOCK = new Object();
-	private static volatile boolean isInited = true; // 是否已初始化好matchInfo标记
+	private static volatile boolean isInited = false; // 是否已初始化好matchInfo标记
 	private static Timer timer = null;
 
 	private ACHelper() {
@@ -45,9 +45,9 @@ public class ACHelper {
 			@Override
 			public void run() {
 				isInited = false; // 标记重新重新初始化
-				LOG.info("imcapture reload focus_mac info.");
+				LOG.debug("imcapture reload focus_mac info.");
 			}
-		}, 1000, interval * 60 * 1000);// 设定指定的时间time,此处为2000毫秒
+		}, interval * 60 * 1000, interval * 60 * 1000);// 设定指定的时间time,此处为2000毫秒
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ACHelper {
 
 		for (String per : pers) {
 			String[] splits = per.split("\002");
-			if (splits != null && splits.length == 18) {
+			if (splits != null && splits.length == 19) {
 				counts++;
 				String[] strs = splits[2].split(":");
 				Integer matchType = Integer.valueOf(strs[0]);
@@ -88,7 +88,7 @@ public class ACHelper {
 				MatchInfo matchInfo = new MatchInfo(Long.valueOf(splits[1]), Long.valueOf(splits[0]), strs[0], strs[1],
 						strs[2], splits[3], splits[4], splits[5], splits[6], Integer.valueOf(splits[7]), splits[8],
 						splits[9], splits[10], splits[11], splits[12], splits[13], splits[14], splits[15],
-						"1".equals(splits[16]), "1".equals(splits[17]));
+						"1".equals(splits[16]), "1".equals(splits[17]),splits[18]);
 
 				if (MatchType.MAC.getCode() == matchType) {
 					acinfo.add((strs[1] + MatchType.MAC.getSimCode()).getBytes(), matchInfo);
@@ -121,7 +121,7 @@ public class ACHelper {
 	}
 
 	/**
-	 * 获取包含重点人的所有布控信息，异步加载
+	 * 获取包含ZDR的所有布控信息，异步加载
 	 */
 	static class ZdInitTask implements Callable<List<String>> {
 		private KeyPerDao keyPerDao;

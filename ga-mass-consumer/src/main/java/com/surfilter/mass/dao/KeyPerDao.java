@@ -44,7 +44,7 @@ public interface KeyPerDao {
 	void saveFocusAlarmInfos(Collection<AlarmInfo> alarmInfos);
 
 	/**
-	 * 批量保存重点人报警信息
+	 * 批量保存ZDR报警信息
 	 *
 	 * @param alarmInfos
 	 */
@@ -70,7 +70,7 @@ public interface KeyPerDao {
 	Map<String, String> getMacFilterConf();
 
 	/**
-	 * 获取不包括重点人的布控信息
+	 * 获取不包括ZDR的布控信息
 	 *
 	 * @return
 	 */
@@ -89,5 +89,12 @@ public interface KeyPerDao {
 	 *
 	 * @param map
 	 */
-	void saveClusterAlarmResults(Map<String, Set<ClusterAlarmResult>> map);
+	void saveClusterAlarmResults(Map<String, Set<ClusterAlarmResult>> map, int stayLimitSeconds);
+
+	/**
+	 * 清理多少天以前的数据
+	 * 
+	 * @param days
+	 */
+	void cleanZdPersonAlarmInfo(int days);
 }

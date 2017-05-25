@@ -21,7 +21,6 @@ public class ImcaptureConsts {
 	public static final String JDBC_URL = "jdbc.url";
 	public static final String JDBC_USER_NAME = "jdbc.username";
 	public static final String JDBC_PASS_WORD = "jdbc.password";
-	public static final String FOCUS_MAC_INFO_COUNTS = "focus.mac.info.counts";
 
 	/** 匹配线程数量 */
 	public static final String MATCH_THREAD_SIZE = "match.thread.size";
@@ -56,6 +55,12 @@ public class ImcaptureConsts {
 	public static final String CLUSTER_ALARM_RESULT_INTERVAL = "cluster_alarm_result_interval";
 	/** 报警团伙人数 */
 	public static final String CLUSTER_ALARM_MIN_COUNTS = "cluster_alarm_min_counts";
+
+	/** 聚集初级的逗留时长最小范围区间，单位为秒 */
+	public static final String CLUSTER_ALARM_STAY_LIMIT_SECONDS = "cluster.alarm.stay.limit.seconds";
+
+	/** ZD_PERSON_ALARM_INFO 删除超过指定天数的数据 */
+	public static final String ZD_PERSON_ALARM_INFO_CLEAN_DAYS = "zd.person.alarm.info.clean.days";
 
 	/** redis key */
 	public static final String REDIS_DUMP_KEY = "imcap_dump_";

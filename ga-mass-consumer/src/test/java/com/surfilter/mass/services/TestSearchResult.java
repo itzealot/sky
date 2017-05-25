@@ -1,12 +1,5 @@
 package com.surfilter.mass.services;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Test;
-
 import com.surfilter.commons.utils.conf.MassConfiguration;
 import com.surfilter.mass.ImcaptureConsts;
 import com.surfilter.mass.dao.KeyPerDao;
@@ -19,8 +12,13 @@ import com.surfilter.mass.services.match.ServiceInfoHelper;
 import com.surfilter.mass.services.match.algthm.AhoCorasick;
 import com.surfilter.mass.services.match.algthm.SearchResult;
 import com.surfilter.mass.utils.ImcaptureUtil;
-
 import junit.framework.TestCase;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class TestSearchResult extends TestCase {
 
@@ -66,7 +64,7 @@ public class TestSearchResult extends TestCase {
 
 	public boolean assertRow(String matchRow) {
 		JdbcConfig confg = JdbcConfig.getInstance(new MassConfiguration());
-		KeyPerDao keyPerDao = KeyPerDaoImpl.getInstance(confg);
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		AhoCorasick<MatchInfo> ac = ACHelper.getInstance(5).getAC(keyPerDao);
 
 		Iterator<SearchResult<MatchInfo>> scResults = ac.search(matchRow.getBytes());
@@ -78,7 +76,7 @@ public class TestSearchResult extends TestCase {
 
 	public void testQueryAlarmInfos(int hours) {
 		JdbcConfig confg = JdbcConfig.getInstance(new MassConfiguration());
-		KeyPerDao keyPerDao = KeyPerDaoImpl.getInstance(confg);
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		System.out.println(keyPerDao.getAlarmInfos(hours));
 	}
 
@@ -90,7 +88,7 @@ public class TestSearchResult extends TestCase {
 
 	public void testGetMacFilterConf() {
 		JdbcConfig confg = JdbcConfig.getInstance(new MassConfiguration());
-		KeyPerDao keyPerDao = KeyPerDaoImpl.getInstance(confg);
+		KeyPerDao keyPerDao = new KeyPerDaoImpl(confg);
 		System.out.println(keyPerDao.getMacFilterConf());
 	}
 
@@ -149,7 +147,7 @@ public class TestSearchResult extends TestCase {
 		String alarmEmails = "alarmEmails";
 
 		MatchInfo info = new MatchInfo(storeId, macId, matchType, matchValue, matchChildValue, alarmPhones, alarmEmails,
-				"", "", 5, "2", "30", "", "", "", "", "", 1 + "", false, false);
+				"", "", 5, "2", "30", "", "", "", "", "", 1 + "", false, false,null);
 
 		// add searchKey bytes and results
 		acinfo.add(match.getBytes(), info);

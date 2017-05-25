@@ -17,59 +17,64 @@
  */
 package com.surfilter.mass.services.match.algthm;
 
-
-
 /**
  * Represents an EdgeList by using a single array. Very fast lookup (just an
  * array access), but expensive in terms of memory.
+ * 
+ * 密集列表(使用数组存储)，存储字节时会进行与运算存储
  */
-
 @SuppressWarnings("serial")
 class DenseEdgeList<T> implements EdgeList<T> {
-  private State<T>[] array;
+	/** 最多可以有256个子节点 */
+	private State<T>[] array;
 
-  @SuppressWarnings("unchecked")
-public DenseEdgeList() {
-    this.array = new State[256];
-    for (int i = 0; i < array.length; i++)
-      this.array[i] = null;
-  }
+	@SuppressWarnings("unchecked")
+	public DenseEdgeList() {
+		this.array = new State[256];
+		for (int i = 0; i < array.length; i++)
+			this.array[i] = null;
+	}
 
-  /**
-   * Helps in converting to dense representation.
-   */
-  public static <T> DenseEdgeList<T> fromSparse(SparseEdgeList<T> list) {
-    byte[] keys = list.keys();
-    DenseEdgeList<T> newInstance = new DenseEdgeList<T>();
-    for (int i = 0; i < keys.length; i++) {
-      newInstance.put(keys[i], list.get(keys[i]));
-    }
-    return newInstance;
-  }
+	/**
+	 * Helps in converting to dense representation.
+	 */
+	public static <T> DenseEdgeList<T> fromSparse(SparseEdgeList<T> list) {
+		byte[] keys = list.keys();
+		DenseEdgeList<T> newInstance = new DenseEdgeList<T>();
+		for (int i = 0; i < keys.length; i++) {
+			newInstance.put(keys[i], list.get(keys[i]));
+		}
+		return newInstance;
+	}
 
-  public State<T> get(byte b) {
-    return this.array[(int) b & 0xFF];
-  }
+	@Override
+	public State<T> get(byte b) {
+		return this.array[(int) b & 0xFF];
+	}
 
-  public void put(byte b, State<T> s) {
-    this.array[(int) b & 0xFF] = s;
-  }
+	@Override
+	public void put(byte b, State<T> s) {
+		this.array[(int) b & 0xFF] = s;
+	}
 
-  public byte[] keys() {
-    int length = 0;
-    for (int i = 0; i < array.length; i++) {
-      if (array[i] != null)
-        length++;
-    }
-    byte[] result = new byte[length];
-    int j = 0;
-    for (int i = 0; i < array.length; i++) {
-      if (array[i] != null) {
-        result[j] = (byte) i;
-        j++;
-      }
-    }
-    return result;
-  }
+	@Override
+	public byte[] keys() {
+		int length = 0;
+		// 子节点个数
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] != null)
+				length++;
+		}
+		byte[] result = new byte[length];
+		int j = 0;
+		// 获取基于当前节点所有直接子节点组合成的字节
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] != null) {
+				result[j] = (byte) i;
+				j++;
+			}
+		}
+		return result;
+	}
 
 }
