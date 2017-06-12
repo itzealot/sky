@@ -1,7 +1,7 @@
 package com.surfilter.mass.services.support;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public class KafkaMsg {

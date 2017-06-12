@@ -24,7 +24,7 @@ import com.surfilter.mass.utils.Threads;
 /**
  * 消息消费者
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class ImcapRunner implements Runnable {

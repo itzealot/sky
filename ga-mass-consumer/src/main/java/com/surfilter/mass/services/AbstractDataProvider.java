@@ -13,7 +13,7 @@ import com.surfilter.mass.ImcaptureContext;
 /**
  * 抽象的数据生产者
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public abstract class AbstractDataProvider implements DataProvider {

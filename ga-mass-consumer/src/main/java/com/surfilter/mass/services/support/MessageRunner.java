@@ -8,7 +8,7 @@ import kafka.consumer.KafkaStream;
 /**
  * 监听某个topic的单个partition从Kafka拉取数据写入缓冲队列
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class MessageRunner implements Runnable {

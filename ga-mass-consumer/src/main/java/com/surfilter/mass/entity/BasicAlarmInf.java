@@ -1,7 +1,7 @@
 package com.surfilter.mass.entity;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public class BasicAlarmInf {

@@ -3,7 +3,7 @@ package com.surfilter.mass.services;
 /**
  * 数据提供者,可以有多重提供方式
  * 
- * @author hapuer
+ * @author zealot
  */
 public interface DataProvider {
 

@@ -11,7 +11,7 @@ import com.surfilter.mass.services.MsgParser;
 /**
  * 围栏日志，，对应日志类型为001
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class WlMsgParser implements MsgParser{

@@ -6,7 +6,7 @@ import java.util.List;
 import com.surfilter.mass.entity.AlarmInfo;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public interface DuplicateRemover {

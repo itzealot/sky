@@ -3,7 +3,7 @@ package com.surfilter.mass.services;
 /**
  * 单条消息处理接口
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public interface MessageExecutor {

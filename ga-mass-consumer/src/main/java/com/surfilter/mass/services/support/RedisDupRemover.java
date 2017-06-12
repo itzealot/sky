@@ -26,7 +26,7 @@ import redis.clients.jedis.Pipeline;
 /**
  * redis 排重报警信息实现类
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class RedisDupRemover implements DuplicateRemover {

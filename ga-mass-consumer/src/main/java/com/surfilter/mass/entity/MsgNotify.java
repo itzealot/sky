@@ -5,7 +5,7 @@ package com.surfilter.mass.entity;
  * 1.可以做短信通知<br />
  * 2.可以做邮件通知<br />
  * 
- * @author hapuer
+ * @author zealot
  */
 public class MsgNotify {
 

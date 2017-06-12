@@ -3,7 +3,7 @@ package com.surfilter.mass;
 /**
  * 报警程序常量类
  * 
- * @author hapuer
+ * @author zealot
  * 
  */
 public class ImcaptureConsts {

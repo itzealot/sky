@@ -14,7 +14,7 @@ import com.surfilter.mass.services.parser.XwMsgParser;
 /**
  * 消息解析器
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public final class MsgParserHolder {

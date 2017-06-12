@@ -10,7 +10,7 @@ import com.surfilter.mass.services.DataProvider;
 /**
  * 数据生产者持有类，持有已经注册的生产者
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class DataProviderHandler extends AbstractDataProvider {

@@ -13,7 +13,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public class ACHelper {

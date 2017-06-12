@@ -12,7 +12,7 @@ import com.surfilter.mass.services.match.algthm.AhoCorasick;
 /**
  * 报警程序上下文
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class ImcaptureContext {

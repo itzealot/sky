@@ -3,7 +3,7 @@ package com.surfilter.mass.services.support;
 import com.lmax.disruptor.EventFactory;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public class KafkaMsgFactory implements EventFactory<KafkaMsg> {

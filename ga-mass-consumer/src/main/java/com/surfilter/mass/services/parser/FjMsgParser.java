@@ -8,7 +8,7 @@ import com.surfilter.mass.services.MsgParser;
 /**
  * 非经轨迹日志，对应日志类型为002
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class FjMsgParser implements MsgParser {

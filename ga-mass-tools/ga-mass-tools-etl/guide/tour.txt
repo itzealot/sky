@@ -1,0 +1,17 @@
+1.生成身份关系json的工具
+1).运行格式:./run.sh SfDataParseCli
+2).参数说明:
+	见配置文件说明
+
+2.解析excel to csv工具
+1).运行格式:./run.sh XlsxOrXls2Csv -sd xxx
+2).参数说明:
+	-sd:excel 文件所在目录
+
+3.多行合并为单行工具
+1).运行格式:./run.sh LineJoinCli -sd xxx -dd xxx -lc xxx -sp xxx
+2).参数说明:
+	-sd:源文件路径
+	-dd:生成目标文件写入路径
+	-lc:每多少行join为一行
+	-sp:目标join行的分隔符

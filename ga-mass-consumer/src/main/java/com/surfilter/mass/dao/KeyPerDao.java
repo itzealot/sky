@@ -13,9 +13,8 @@ import com.surfilter.mass.entity.ServiceInfo;
 import com.surfilter.mass.services.match.algthm.AhoCorasick;
 
 /**
- * 关键人员Dao
  * 
- * @author hapuer
+ * @author zealot
  */
 public interface KeyPerDao {
 

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * JDBC 工具类
  * 
- * @author hapuer
+ * @author zealot
  */
 public class JdbcUtils {
 

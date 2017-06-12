@@ -11,7 +11,7 @@ import com.surfilter.mass.services.MsgParser;
 /**
  * 行为日志即上网日志，对应日志类型004
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class XwMsgParser implements MsgParser {

@@ -5,7 +5,7 @@ import com.surfilter.mass.utils.ImcaptureUtil;
 /**
  * 匹配信息构建实体
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class MatchInfo {

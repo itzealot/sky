@@ -17,7 +17,7 @@ import kafka.javaapi.consumer.ConsumerConnector;
 /**
  * Kafka 数据生产者，针对一类数据(指定topicName与partitions)从Kafka拉取数据
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class KafkaProvider extends AbstractDataProvider {

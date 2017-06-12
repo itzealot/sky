@@ -3,7 +3,7 @@ package com.surfilter.mass.services;
 /**
  * 消息消费接口
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public interface DataConsumer {

@@ -6,7 +6,7 @@ import com.surfilter.mass.services.MessageExecutor;
 /**
  * 消息发布者实现类
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class DisruptorMsgExecutor implements MessageExecutor {

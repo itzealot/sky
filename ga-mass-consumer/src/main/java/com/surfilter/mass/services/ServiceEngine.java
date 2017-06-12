@@ -28,7 +28,7 @@ import com.surfilter.mass.utils.ImcaptureUtil;
 /**
  * 服务注册及启动类
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class ServiceEngine {

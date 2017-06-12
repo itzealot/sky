@@ -3,7 +3,7 @@ package com.surfilter.mass.services;
 import com.surfilter.mass.entity.BasicAlarmInf;
 
 /**
- * @author hapuer 消息解析器
+ * @author zealot 消息解析器
  */
 public interface MsgParser {
 

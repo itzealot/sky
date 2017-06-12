@@ -9,7 +9,7 @@ import com.surfilter.mass.utils.ImcaptureUtil;
 /**
  * 报警信息实体
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class AlarmInfo {

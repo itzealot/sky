@@ -11,7 +11,7 @@ import com.surfilter.mass.services.ImcapRunner;
 /**
  * 消费者实现类，使用多线程消费
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class CmDataConsumer implements DataConsumer {

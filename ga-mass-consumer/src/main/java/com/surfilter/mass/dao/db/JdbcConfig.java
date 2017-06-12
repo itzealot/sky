@@ -8,7 +8,7 @@ import com.surfilter.mass.ImcaptureConsts;
 /**
  * JDBC 配置实体
  * 
- * @author hapuer
+ * @author zealot
  */
 public class JdbcConfig {
 

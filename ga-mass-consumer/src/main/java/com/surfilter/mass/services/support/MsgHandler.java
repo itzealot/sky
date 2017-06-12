@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.lmax.disruptor.EventHandler;
 
 /**
- * @author hapuer
+ * @author zealot
  *
  */
 public class MsgHandler implements EventHandler<KafkaMsg> {

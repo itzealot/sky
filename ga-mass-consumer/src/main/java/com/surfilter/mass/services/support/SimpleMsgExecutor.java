@@ -12,7 +12,7 @@ import com.surfilter.mass.services.MessageExecutor;
 /**
  * 获取消息并放入阻塞队列实现类
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class SimpleMsgExecutor implements MessageExecutor {

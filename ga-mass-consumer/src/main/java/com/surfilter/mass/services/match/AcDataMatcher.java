@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * 专注文本高速匹配(匹配单行记录)
  *
- * @author hapuer
+ * @author zealot
  */
 public class AcDataMatcher extends AbstractDataMatcher {
 

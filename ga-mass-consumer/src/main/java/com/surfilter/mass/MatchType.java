@@ -3,7 +3,7 @@ package com.surfilter.mass;
 /**
  * 1:MAC地址,2:手机号,3:IMEI号,4:IMSI号,5:证件号码,6:虚拟身份,7:APP协议
  * 
- * @author hapuer
+ * @author zealot
  */
 public enum MatchType {
 

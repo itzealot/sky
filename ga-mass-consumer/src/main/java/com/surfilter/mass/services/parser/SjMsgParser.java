@@ -8,7 +8,7 @@ import com.surfilter.mass.services.MsgParser;
 /**
  * 上机日志即终端上下线日志，对应日志类型为005
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public class SjMsgParser implements MsgParser {

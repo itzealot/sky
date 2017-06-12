@@ -1,0 +1,68 @@
+一.关于关系迁移工具的使用说明文档
+只支持jdk1.8运行，如果不是jdk1.8，需要copy jdk1.8的包，并修改bin/run.sh，将内容 JAVA=$JAVA_HOME/bin/java 改为 jdk1.8目录/bin/java
+
+1.关系文件导出，导出关系文件，导出的关系文件的字段包括:id_from,from_type,id_to,to_type,first_start_time,first_terminal_num,source,create_time,sys_source,[company_id,]create_time_p;即只支持加了 sys_source之后版本的数据迁移;
+	1).批量导出，执行 impala-shell -q "select * from relation" -B -o /appslog/relation.txt(无 relation_parquet 表选择使用 relation 表);impala-shell -q "select * from relation_parquet" -B -o /appslog/relation.txt(有 relation_parquet 表选择 relation_parquet 表)
+	2).增量导出，根据 create_time_p 查询条件导出未迁移过的文件，查询语句可以是:select * from relation where create_time_p like "201608%";如第一次导入的是 create_time_p=20161010 以及之间的数据，则增量查询的语句即导出 create_time_p=20161010 之后的数据；如果当前日期为2017年1月1日，则导出语句可以是:
+	impala-shell -q "select * from relation_parquet where create_time_p between '20161011' and '20170101'" -B -o /appslog/relation.txt(有 relation_parquet 表选择 relation_parquet 表)
+	impala-shell -q "select * from relation where create_time_p between '20161011' and '20170101'" -B -o /appslog/relation.txt(无 relation_parquet 表选择使用 relation 表)
+2.修改配置文件信息，只需修改迁移关系数据工具的配置(包括 redis,hbase 以及解析文件的配置)
+3.运行程序:sh bin/run.sh RelationParseApp
+4.执行完成后将生成的相应文件导入到 certification_parquet,certification_track_parquet,relation_parquet;
+
+1).创建 hive 表
+在有impala-shell(iDriller-shell)的主机执行(hive)进入 hive 控制台
+hive
+
+2).创建 hive 表
+# 如果需要导入数据系统的当前版本为管综版本，则执行以下 sql
+# 创建表时 relation 与 certification 有 company_id 字段
+CREATE TABLE default.certification_import(id STRING,id_type STRING,first_start_time STRING,first_terminal_num STRING,source STRING,create_time STRING,sys_source STRING,company_id STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+CREATE TABLE default.certification_track_import(id_no STRING,id_type STRING,cert_type STRING,devicenum STRING,province_code STRING,city_code STRING,area_code STRING,service_code STRING,start_time STRING,times STRING,source STRING,company_id STRING,center_code STRING,create_time STRING,sys_source STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+CREATE TABLE default.relation_import(id_from STRING,from_type STRING,id_to STRING,to_type STRING,first_start_time STRING,first_terminal_num STRING,source STRING,create_time STRING,sys_source STRING,company_id STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+# 如果需要导入数据系统的当前版本为非管综版本，则执行以下 sql
+CREATE TABLE default.certification_import(id STRING,id_type STRING,first_start_time STRING,first_terminal_num STRING,source STRING,create_time STRING,sys_source STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+CREATE TABLE default.certification_track_import(id_no STRING,id_type STRING,cert_type STRING,devicenum STRING,province_code STRING,city_code STRING,area_code STRING,service_code STRING,start_time STRING,times STRING,source STRING,company_id STRING,center_code STRING,create_time STRING,sys_source STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+CREATE TABLE default.relation_import(id_from STRING,from_type STRING,id_to STRING,to_type STRING,first_start_time STRING,first_terminal_num STRING,source STRING,create_time STRING,sys_source STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+3).使用 LOAD 命令进行加载生成的文件
+# 将生成的指定文件 LOAD 到指定的 hive 表
+# LOCAL INPATH:指定本地文件系统的文件路径或者目录
+LOAD DATA LOCAL INPATH '生成文件的 certification 目录' INTO TABLE default.certification_import;
+
+LOAD DATA LOCAL INPATH '生成文件的 certification_track 目录' INTO TABLE default.certification_track_import;
+
+LOAD DATA LOCAL INPATH '生成文件的 relation 目录' INTO TABLE default.relation_import;
+
+4).使用 Impala(iDriller)对数据进行校验，查询导入数据的前20条进行校验，数据字段及值是否正确
+impala-shell
+
+# 从 hive 中加载源数据
+invalidate metadata;
+
+# 刷新表
+refresh default.certification_import;
+refresh default.certification_track_import;
+refresh default.relation_import;
+
+5).使用 impala 导入数据到 parquet 表
+# 在 certification_parquet 表中新增一个新的分区来存储新导入的 certification ，如新增分区 20160101
+# 如果执行该语句报错，代表该分区存在，需要使用 show partition 来查看，再选择一个没有的时间来作为新的分区
+alter table default.certification_parquet add partition(create_time_p='20160101');
+# 将数据插入到表中
+insert into table default.certification_parquet partition(create_time_p='20160101') select * from default.certification_import;
+
+# 在 certification_track_parquet 表中新增一个新的分区来存储新导入的 certification_track ，如新增分区 20160101
+alter table default.certification_track_parquet add partition(create_time_p='20160101');
+# 将数据插入到表中
+insert into table default.certification_track_parquet partition(create_time_p='20160101') select * from default.certification_track_import;
+
+# 在 relation_parquet 表中新增一个新的分区来存储新导入的 relation ，如新增分区 20160101
+alter table default.relation_parquet add partition(create_time_p='20160101');
+# 将数据插入到表中
+insert into table default.relation_parquet partition(create_time_p='20160101') select * from default.relation_import;

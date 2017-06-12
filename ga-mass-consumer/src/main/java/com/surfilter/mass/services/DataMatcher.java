@@ -7,7 +7,7 @@ import com.surfilter.mass.entity.AlarmInfo;
 /**
  * 数据匹配接口
  * 
- * @author hapuer
+ * @author zealot
  *
  */
 public interface DataMatcher {
