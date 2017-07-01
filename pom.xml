@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.sky.project.share</groupId>
+	<artifactId>sky</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
+
+	<name>sky</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<test_version>4.11</test_version>
+		<guava_version>16.0.1</guava_version>
+		<gson_version>2.2.4</gson_version>
+		<slf4j_api_version>1.7.6</slf4j_api_version>
+		<slf4j_log4j12_version>1.7.7</slf4j_log4j12_version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${test_version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- The lsf4j dependency start. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j_api_version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j_log4j12_version}</version>
+		</dependency>
+		<!-- The lsf4j dependency end. -->
+
+		<!-- The google dependency start. -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson_version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava_version}</version>
+		</dependency>
+		<!-- The google dependency end. -->
+	</dependencies>
+
+
+	<modules>
+		<module>sky-tools</module>
+		<module>sky-common</module>
+	</modules>
+</project>
