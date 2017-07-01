@@ -1,4 +1,4 @@
-package com.sky.project.share.common;
+package com.sky.project.share.api.zookeeper;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

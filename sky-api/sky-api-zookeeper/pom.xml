@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sky.project.share</groupId>
+		<artifactId>sky-api</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.sky.project.share</groupId>
+	<artifactId>sky-api-zookeeper</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sky-api-zookeeper</name>
+
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<curator_framework_version>2.8.0</curator_framework_version>
+		<curator_recipes_version>2.8.0</curator_recipes_version>
+	</properties>
+
+	<dependencies>
+		<!-- curator start -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curator_framework_version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>${curator_recipes_version}</version>
+		</dependency>
+		<!-- curator end -->
+
+		<dependency>
+			<groupId>com.sky.project.share</groupId>
+			<artifactId>sky-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
