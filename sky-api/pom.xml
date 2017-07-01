@@ -23,5 +23,6 @@
 	</dependencies>
   <modules>
     <module>sky-api-zookeeper</module>
+    <module>sky-api-registry</module>
   </modules>
 </project>
