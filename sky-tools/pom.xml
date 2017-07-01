@@ -44,5 +44,6 @@
 		<module>sky-tools-hive</module>
 		<module>sky-tools-reptile</module>
     <module>sky-tools-restlet</module>
+    <module>sky-tools-disruptor</module>
   </modules>
 </project>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sky.project.share</groupId>
+		<artifactId>sky-tools</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.sky.project.share</groupId>
+	<artifactId>sky-tools-disruptor</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sky-tools-disruptor</name>
+
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<disruptor_version>3.3.4</disruptor_version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>${disruptor_version}</version>
+		</dependency>
+	</dependencies>
+</project>

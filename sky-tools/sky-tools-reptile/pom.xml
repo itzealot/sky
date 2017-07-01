@@ -8,14 +8,17 @@
 		<artifactId>sky-tools</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+
 	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-tools-reptile</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sky-tools-reptile</name>
+
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -28,6 +31,12 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.9.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sky.project.share</groupId>
+			<artifactId>sky-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

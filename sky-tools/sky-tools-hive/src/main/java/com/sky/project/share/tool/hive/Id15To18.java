@@ -9,11 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 130825820610001 => 130825198206100012
- * 440301107414264
+ * Id15To18
  * 
- * @author well
- *
+ * @author zealot
  */
 public class Id15To18 {
 

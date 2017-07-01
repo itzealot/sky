@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.sky.project.share.common.thread.Threads;
+import com.sky.project.share.common.util.Closeables;
 
 /**
  * 文件读取工具类

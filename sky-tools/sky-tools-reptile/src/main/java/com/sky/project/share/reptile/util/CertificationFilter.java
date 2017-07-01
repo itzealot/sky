@@ -1,6 +1,5 @@
 package com.sky.project.share.reptile.util;
 
-import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
@@ -9,8 +8,7 @@ import java.util.regex.Pattern;
  * @author zealot
  *
  */
-@SuppressWarnings("serial")
-public class CertificationFilter implements Serializable {
+public class CertificationFilter {
 
 	public static final Pattern MAC_REGEX_048C = Pattern.compile("^[A-F0-9]{1}[048C]{1}(-[A-F0-9]{2}){5}$");
 	public static final Pattern MAC_REGEX = Pattern.compile("([0-9A-F]{2}-){5}[0-9A-F]{2}");
