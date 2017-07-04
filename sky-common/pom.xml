@@ -9,9 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-common</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>sky-common</name>
 
 	<url>http://maven.apache.org</url>

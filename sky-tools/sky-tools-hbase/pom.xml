@@ -9,9 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-tools-hbase</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>sky-tools-hbase</name>
 
 	<url>http://maven.apache.org</url>
@@ -19,10 +17,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+
 		<dependency>
 			<groupId>com.sky.project.share</groupId>
 			<artifactId>sky-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

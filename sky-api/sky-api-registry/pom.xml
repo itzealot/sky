@@ -9,9 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-api-registry</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 
 	<name>sky-api-registry</name>
 	<url>http://maven.apache.org</url>

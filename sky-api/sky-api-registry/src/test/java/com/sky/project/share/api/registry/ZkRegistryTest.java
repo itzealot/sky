@@ -1,6 +1,7 @@
 package com.sky.project.share.api.registry;
 
-import com.sky.project.share.api.registry.support.ZkRegistry;
+import com.sky.project.share.api.registry.support.DefaultRegistryFactory;
+import com.sky.project.share.api.registry.support.zookeeper.ZkRegistry;
 
 public class ZkRegistryTest {
 

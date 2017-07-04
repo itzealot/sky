@@ -9,30 +9,26 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>sky-api-zookeeper</artifactId>
-	<name>sky-api-zookeeper</name>
-
+	<artifactId>sky-api-kafka</artifactId>
+	<name>sky-api-kafka</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<curator_framework_version>2.8.0</curator_framework_version>
-		<curator_recipes_version>2.8.0</curator_recipes_version>
+		<kafka_version>0.9.0.0</kafka_version>
 	</properties>
 
 	<dependencies>
-		<!-- curator start -->
 		<dependency>
-			<groupId>org.apache.curator</groupId>
-			<artifactId>curator-framework</artifactId>
-			<version>${curator_framework_version}</version>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>${kafka_version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.curator</groupId>
-			<artifactId>curator-recipes</artifactId>
-			<version>${curator_recipes_version}</version>
-		</dependency>
-		<!-- curator end -->
 
 		<dependency>
 			<groupId>com.sky.project.share</groupId>

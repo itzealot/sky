@@ -3,7 +3,7 @@ package com.sky.project.share.api.registry;
 import java.util.Collection;
 
 import com.sky.project.share.api.registry.entity.RegistryInfo;
-import com.sky.project.share.api.registry.support.ZkRegistryDiscovery;
+import com.sky.project.share.api.registry.support.zookeeper.ZkRegistryDiscovery;
 
 public class ZkRegistryDiscoveryTest {
 

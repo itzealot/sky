@@ -8,9 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-tools</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>sky-tools</name>
@@ -20,7 +18,6 @@
 
 	</properties>
 	<dependencies>
-
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
@@ -39,6 +36,7 @@
 			<version>2.4</version>
 		</dependency>
 	</dependencies>
+
 	<modules>
 		<module>sky-tools-hbase</module>
 		<module>sky-tools-redis</module>

@@ -1,4 +1,4 @@
-package com.sky.project.share.api.registry.support;
+package com.sky.project.share.api.registry.support.zookeeper;
 
 import java.io.IOException;
 
@@ -30,6 +30,7 @@ public class ZkRegistry extends ZkRegistryClient implements Registry<RegistryFac
 	}
 
 	/**
+	 * ZkRegistry
 	 * 
 	 * @param url
 	 * @param rootPath
@@ -42,7 +43,7 @@ public class ZkRegistry extends ZkRegistryClient implements Registry<RegistryFac
 
 	@Override
 	public void register(RegistryFactory factory) {
-		createNodeRecurse(factory.newInstance());
+		createNodeRecurse(factory.getRegistry());
 
 		// 注册监听器
 		newClient.getConnectionStateListenable().addListener(new ConnectionStateListener() {
@@ -50,7 +51,7 @@ public class ZkRegistry extends ZkRegistryClient implements Registry<RegistryFac
 			public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
 				// 节点状态变更，当失去连接时，重新创建节点
 				if (connectionState == ConnectionState.LOST) {
-					createNodeRecurse(factory.newInstance());
+					createNodeRecurse(factory.getRegistry());
 				}
 			}
 		});

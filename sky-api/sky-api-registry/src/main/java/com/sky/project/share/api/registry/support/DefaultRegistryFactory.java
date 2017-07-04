@@ -1,7 +1,8 @@
-package com.sky.project.share.api.registry;
+package com.sky.project.share.api.registry.support;
 
 import java.util.Date;
 
+import com.sky.project.share.api.registry.RegistryFactory;
 import com.sky.project.share.api.registry.entity.RegistryInfo;
 import com.sky.project.share.api.registry.util.NetUtil;
 import com.sky.project.share.api.registry.util.SystemPropertiesUtil;
@@ -23,7 +24,7 @@ public class DefaultRegistryFactory implements RegistryFactory {
 	}
 
 	@Override
-	public RegistryInfo newInstance() {
+	public RegistryInfo getRegistry() {
 		return new RegistryInfo(registerName, NetUtil.getLocalAddress().getHostAddress(), NetUtil.getLocalHost(),
 				new Date().getTime() / 1000, SystemPropertiesUtil.getString("user.dir"), version);
 	}

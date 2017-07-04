@@ -9,21 +9,19 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-tools-restlet</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>sky-tools-restlet</name>
 
 	<url>http://maven.apache.org</url>
 	<properties>
-		<org_restlet_version>2.3.4</org_restlet_version>
+		<org_restlet_version>2.3.9</org_restlet_version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet</artifactId>
-			<version>2.3.9</version>
+			<version>${org_restlet_version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -12,8 +12,9 @@ import com.sky.project.share.api.registry.entity.RegistryInfo;
 public interface RegistryFactory {
 
 	/**
+	 * getRegistry
 	 * 
 	 * @return
 	 */
-	RegistryInfo newInstance();
+	RegistryInfo getRegistry();
 }

@@ -1,4 +1,4 @@
-package com.sky.project.share.api.registry.support;
+package com.sky.project.share.api.registry.support.zookeeper;
 
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
