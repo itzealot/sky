@@ -18,6 +18,8 @@
 		<commons_cli_version>1.2</commons_cli_version>
 		<jedis_version>2.7.2</jedis_version>
 		<hbase_version>0.98.16-hadoop2</hbase_version>
+		<kafka_version>0.8.1.1</kafka_version>
+		<jcache_version>0.4</jcache_version>
 	</properties>
 
 	<dependencies>
@@ -49,11 +51,11 @@
 		</dependency>
 		<!-- Hbase -->
 
-		<!-- kafka -->
+		<!-- kafka start -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_2.10</artifactId>
-			<version>0.8.1.1</version>
+			<version>${kafka_version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>junit</groupId>
@@ -63,5 +65,15 @@
 			<optional>true</optional>
 			<scope>provided</scope>
 		</dependency>
+		<!-- kafka end -->
+
+		<!-- javax.cache start -->
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+			<version>${jcache_version}</version>
+		</dependency>
+		<!-- javax.cache end -->
+
 	</dependencies>
 </project>

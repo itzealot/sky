@@ -1,6 +1,7 @@
 package com.sky.project.share.api.kafka.support.consumer;
 
 /**
+ * Consumer
  * 
  * @author zealot
  *
@@ -12,7 +13,7 @@ public interface Consumer extends AutoCloseable {
 	 * 
 	 * @param task
 	 */
-	void execute(KafkaMessageConsumer task);
+	void execute(AbstractKafkaMessageConsumer task);
 
 	/**
 	 * close

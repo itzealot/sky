@@ -1,8 +1,6 @@
 package com.sky.project.share.api.kafka.support.provider.impl;
 
-import java.util.Objects;
-
-import com.sky.project.share.api.kafka.support.MessageExecutor;
+import java.util.concurrent.BlockingQueue;
 
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -16,13 +14,11 @@ import kafka.consumer.KafkaStream;
 public class KafkaPartitionProvider implements Runnable {
 
 	private final KafkaStream<byte[], byte[]> kafkaStream;
-	private final MessageExecutor<byte[]> consumer;
+	private final BlockingQueue<String> queue;
 
-	public KafkaPartitionProvider(KafkaStream<byte[], byte[]> kafkaStream, MessageExecutor<byte[]> consumer) {
-		Objects.requireNonNull(consumer, "consumer can't be null");
-
+	public KafkaPartitionProvider(KafkaStream<byte[], byte[]> kafkaStream, BlockingQueue<String> queue) {
 		this.kafkaStream = kafkaStream;
-		this.consumer = consumer;
+		this.queue = queue;
 	}
 
 	@Override
@@ -31,7 +27,7 @@ public class KafkaPartitionProvider implements Runnable {
 
 		while (it.hasNext()) {
 			try {
-				consumer.consume(it.next().message());
+				queue.put(new String(it.next().message(), "UTF-8"));
 			} catch (Exception e) {
 			}
 		}

@@ -6,11 +6,11 @@ import java.util.concurrent.Executors;
 import com.sky.project.share.api.kafka.SkyKafkaConsts;
 import com.sky.project.share.api.kafka.SkyKafkaContext;
 import com.sky.project.share.api.kafka.support.consumer.Consumer;
-import com.sky.project.share.api.kafka.support.consumer.KafkaMessageConsumer;
+import com.sky.project.share.api.kafka.support.consumer.AbstractKafkaMessageConsumer;
 import com.sky.project.share.common.thread.pool.NamedThreadFactory;
 
 /**
- * ConsumerFactory
+ * DefaultConsumer
  * 
  * @author zealot
  *
@@ -21,11 +21,11 @@ public class DefaultConsumer implements Consumer {
 
 	public DefaultConsumer(SkyKafkaContext context) {
 		int nums = context.getInt(SkyKafkaConsts.CONSUMER_NUM, SkyKafkaConsts.DEFAULT_CONSUMER_NUM);
-		this.executors = Executors.newFixedThreadPool(nums, new NamedThreadFactory("SkyKafkaConsumer"));
+		this.executors = Executors.newFixedThreadPool(nums, new NamedThreadFactory("SkyKafkaConsumer", true));
 	}
 
 	@Override
-	public void execute(KafkaMessageConsumer task) {
+	public void execute(AbstractKafkaMessageConsumer task) {
 		if (executors != null) {
 			executors.execute(task);
 		}

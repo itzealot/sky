@@ -8,18 +8,18 @@ import com.sky.project.share.api.kafka.SkyKafkaConsts;
 import com.sky.project.share.api.kafka.SkyKafkaContext;
 
 /**
- * KafkaStringConsumer
+ * AbstractKafkaMessageConsumer
  * 
  * @author zealot
  *
  */
-public abstract class KafkaMessageConsumer implements Runnable {
+public abstract class AbstractKafkaMessageConsumer implements Runnable {
 
 	private final BlockingQueue<String> queue;
 	protected final SkyKafkaContext context;
 	private final int batchSize;
 
-	public KafkaMessageConsumer(SkyKafkaContext context) {
+	public AbstractKafkaMessageConsumer(SkyKafkaContext context) {
 		this.context = context;
 		this.queue = context.getBlockingQueue();
 		this.batchSize = context.getInt(SkyKafkaConsts.CONSUMER_CONSUME_BATCH_SIZE,
