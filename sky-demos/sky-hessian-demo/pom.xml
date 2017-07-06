@@ -2,9 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.sky.project.share.hessian</groupId>
+	<parent>
+		<groupId>com.sky.project.share</groupId>
+		<artifactId>sky-demos</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
 	<artifactId>sky-hessian-demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 
 	<packaging>war</packaging>
 	<name>sky-hessian-demo Maven Webapp</name>
@@ -37,6 +41,7 @@
 		</dependency>
 		<!-- hessian end -->
 	</dependencies>
+
 	<build>
 		<finalName>sky-hessian-demo</finalName>
 	</build>

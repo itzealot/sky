@@ -9,9 +9,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-demos</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+
 	<name>sky-demos</name>
 	<packaging>pom</packaging>
 
@@ -19,6 +18,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<modules>
+		<module>sky-hessian-demo</module>
+	</modules>
 
 	<dependencies>
 
