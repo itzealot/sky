@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.sky.project.share.api.kafka.SkyKafkaConsts;
 import com.sky.project.share.api.kafka.SkyKafkaContext;
-import com.sky.project.share.api.kafka.support.MessageExecutor;
 import com.sky.project.share.api.kafka.support.provider.Provider;
 import com.sky.project.share.common.thread.pool.NamedThreadFactory;
 
@@ -27,16 +27,18 @@ import kafka.javaapi.consumer.ConsumerConnector;
 public class KafkaProvider implements Provider {
 
 	private final ConsumerConnector connector;
-	private ExecutorService threadPool;
-	private final TopicAndPartition topicAndPartition;
-	private final MessageExecutor<byte[]> consumer;
+	private final BlockingQueue<String> queue;
+	private final ExecutorService threadPool;
+	private final String topic;
+	private final int partition;
 
-	public KafkaProvider(SkyKafkaContext context, TopicAndPartition topicAndPartition,
-			MessageExecutor<byte[]> consumer) {
+	public KafkaProvider(SkyKafkaContext context, TopicAndPartition topicAndPartition) {
 		this.connector = kafka.consumer.Consumer
 				.createJavaConsumerConnector(new ConsumerConfig(initKafkaProps(context)));
-		this.topicAndPartition = topicAndPartition;
-		this.consumer = consumer;
+		this.queue = context.getBlockingQueue();
+		this.topic = topicAndPartition.topic();
+		this.partition = topicAndPartition.partition();
+		this.threadPool = Executors.newFixedThreadPool(partition, new NamedThreadFactory("SkyKafkaProvider"));
 	}
 
 	private Properties initKafkaProps(SkyKafkaContext context) {
@@ -60,30 +62,26 @@ public class KafkaProvider implements Provider {
 
 	@Override
 	public void provide() {
-		Map<String, Integer> topicsMap = new HashMap<String, Integer>(2);
-		String topic = topicAndPartition.topic();
-		int partition = topicAndPartition.partition();
+		Map<String, Integer> topicsMap = new HashMap<String, Integer>(1);
 		topicsMap.put(topic, partition);
 
 		List<KafkaStream<byte[], byte[]>> kafkaStreams = connector.createMessageStreams(topicsMap).get(topic);
 
-		// new fixed Thread Pool
-		threadPool = Executors.newFixedThreadPool(partition, new NamedThreadFactory("SkyKafkaProvider"));
-
 		// for each every partition submitting Task
 		for (KafkaStream<byte[], byte[]> kafkaStream : kafkaStreams) {
-			threadPool.execute(new KafkaPartitionProvider(kafkaStream, consumer));
+			threadPool.execute(new KafkaPartitionProvider(kafkaStream, queue));
 		}
 	}
 
 	@Override
 	public void close() {
 		try {
-			threadPool.shutdownNow();
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
+			if (threadPool != null) {
+				threadPool.shutdown();
+			}
 		} finally {
-			connector.shutdown();
+			if (connector != null)
+				connector.shutdown();
 		}
 	}
 

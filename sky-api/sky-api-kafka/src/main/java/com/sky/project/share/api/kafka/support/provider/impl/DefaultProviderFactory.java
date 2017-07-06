@@ -2,9 +2,12 @@ package com.sky.project.share.api.kafka.support.provider.impl;
 
 import java.util.Set;
 
+import com.sky.project.share.api.kafka.SkyKafkaContext;
 import com.sky.project.share.api.kafka.support.provider.Provider;
 import com.sky.project.share.api.kafka.support.provider.ProviderFactory;
 import com.sky.project.share.common.support.ConcurrentHashSet;
+
+import kafka.common.TopicAndPartition;
 
 /**
  * RroviderFactory
@@ -14,6 +17,7 @@ import com.sky.project.share.common.support.ConcurrentHashSet;
  */
 public class DefaultProviderFactory implements Provider, ProviderFactory {
 
+	// providers
 	private final Set<Provider> providers;
 
 	public DefaultProviderFactory() {
@@ -52,6 +56,11 @@ public class DefaultProviderFactory implements Provider, ProviderFactory {
 		for (Provider provider : providers) {
 			provider.provide();
 		}
+	}
+
+	@Override
+	public Provider getProvider(SkyKafkaContext context, TopicAndPartition topicAndPartition) {
+		return new KafkaProvider(context, topicAndPartition);
 	}
 
 }
