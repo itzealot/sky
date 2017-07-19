@@ -1,0 +1,80 @@
+1.hbase 删除行的工具
+1).运行格式:hbaseToolsDeleteCli -t xxx -f xxx -m r|c -sp xxx
+2).参数说明:
+	-t:指定需要处理的hbase表名称,如certification,relation
+	-f:文件路径,仅支持单个文件解析
+	-m:删除关系则值为r,删除身份则为c
+	-sp:指定解析文件的分隔符,如"\t",",","|"等
+
+2.hbase 删除列的工具
+1).运行格式:delColCli -t xxx -f xxx -m r|c -col xxx -sp xxx
+2).参数说明:
+	-t:指定需要处理的hbase表名称,如certification,relation
+	-f:文件路径,仅支持单个文件解析
+	-m:删除关系则值为r,删除身份则为c
+	-col:指定要删除的列名称,如列 s1_MULL_MULL
+	-sp:指定解析文件的分隔符,如"\t",",","|"等
+
+3.hbase 修改列的工具
+1).运行格式:modifyColCli -t xxx -f xxx -m r|c -dc xxx -ac xxx -sp xxx
+2).参数说明:
+	-t:指定需要处理的hbase表名称,如certification,relation
+	-f:文件路径,仅支持单个文件解析
+	-m:删除关系则值为r,删除身份则为c
+	-dc:指定要删除的列名称,如 s1_MULL_MULL
+	-ac:指定要增加的列名称,如 s2_MULL_MULL
+	-sp:指定解析文件的分隔符,如"\t",",","|"等
+
+4.hbase 修改列值的工具
+1).运行格式:putColCli -t xxx -f xxx -m r|c -col xxx -value xxx -type xxx -sp xxx
+2).参数说明:
+	-t:指定需要处理的hbase表名称,如certification,relation
+	-f:文件路径,仅支持单个文件解析
+	-m:删除关系则值为r,删除身份则为c
+	-col:指定增加值的列名称
+	-value:指定要更新的值
+	-type:指定增加值的类型,int|long|string
+	-sp:指定解析文件的分隔符,如"\t",",","|"等
+
+5.hbase 产生行键的工具
+1).运行格式:hbaseToolsGenRowkeysCli -sf xxx
+2).参数说明:
+	-sf:文件路径,仅支持单个文件解析
+	-d:指定解析文件的分隔符,如"\t",",","|"等
+
+6.hbase relation 解析入hbase工具
+1).运行格式:rt2HbaseCli -rt_file_dir xxx -t xxx -cid xxx
+2).参数说明:
+	-rt_file_dir:relation 文件所在目录
+	-t:指定relation表名称
+	-cid:指定导入的company_id值
+
+7.hbase certification 解析入hbase工具
+1).运行格式:cert2HbaseCli -cert_file_dir xxx -t xxx -cid xxx
+2).参数说明:
+	-cert_file_dir:certification 文件所在目录
+	-t:指定 certification 表名称
+	-cid:指定导入的company_id值
+
+8.hbase relation 解析入hbase工具
+1).运行格式:sh run.sh FileRelation2HbaseCli
+2).参数说明:见配置文件
+
+9.hbase 按范围修改列值的工具
+1).运行格式:modifyValueRange -t xxx -f xxx -m r|c -col xxx -value xxx -type xxx -sp xxx -range xxx-xxx
+2).参数说明:
+	-t:指定需要处理的hbase表名称,如certification,relation
+	-f:文件路径,仅支持单个文件解析
+	-m:删除关系则值为r,删除身份则为c
+	-col:指定增加值的列名称
+	-value:指定要更新的值
+	-type:指定增加值的类型,int|long|string
+	-sp:指定解析文件的分隔符,如"\t",",","|"等
+	-range:指定范围内的数据进行更新,-range A-B 即列值在A与B之间的数据进行更新
+	
+10.hbase将一个表的数据导入另一个表，将rowkey修改为md5.substring(0-7)+rowkey方式
+1）启动命令：sh run.sh tableTransCli -st relation或certification -dt relation_hexsplit或certification_hexsplit -srow start_rowkey
+2）参数说明：
+	-st：源表
+	-dt：目标表
+	-srow: 起始rowkey

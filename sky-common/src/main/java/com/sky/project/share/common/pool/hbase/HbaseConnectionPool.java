@@ -46,14 +46,10 @@ public class HbaseConnectionPool extends PoolBase<HConnection> implements Connec
 
 	/**
 	 *
-	 * @param host
-	 *            地址
-	 * @param port
-	 *            端口
-	 * @param master
-	 *            hbase主机
-	 * @param rootdir
-	 *            hdfs目录
+	 * @param host 地址
+	 * @param port 端口
+	 * @param master hbase主机
+	 * @param rootdir hdfs目录
 	 */
 	public HbaseConnectionPool(final String host, final String port, final String master, final String rootdir) {
 		this(new PoolConfig(), host, port, master, rootdir);
@@ -65,12 +61,9 @@ public class HbaseConnectionPool extends PoolBase<HConnection> implements Connec
 
 	/**
 	 *
-	 * @param poolConfig
-	 *            池配置
-	 * @param host
-	 *            地址
-	 * @param port
-	 *            端口
+	 * @param poolConfig 池配置
+	 * @param host 地址
+	 * @param port 端口
 	 */
 	public HbaseConnectionPool(final PoolConfig poolConfig, final String host, final String port) {
 		this(poolConfig, host, port, HbaseConfig.DEFAULT_MASTER, HbaseConfig.DEFAULT_ROOTDIR);
@@ -78,10 +71,8 @@ public class HbaseConnectionPool extends PoolBase<HConnection> implements Connec
 
 	/**
 	 *
-	 * @param poolConfig
-	 *            池配置
-	 * @param hadoopConfiguration
-	 *            hbase配置
+	 * @param poolConfig 池配置
+	 * @param hadoopConfiguration hbase配置
 	 */
 	public HbaseConnectionPool(final PoolConfig poolConfig, final Configuration hadoopConfiguration) {
 		super(poolConfig, new HbaseConnectionFactory(hadoopConfiguration));
@@ -89,16 +80,11 @@ public class HbaseConnectionPool extends PoolBase<HConnection> implements Connec
 
 	/**
 	 *
-	 * @param poolConfig
-	 *            池配置
-	 * @param host
-	 *            地址
-	 * @param port
-	 *            端口
-	 * @param master
-	 *            hbase主机
-	 * @param rootdir
-	 *            hdfs目录
+	 * @param poolConfig 池配置
+	 * @param host 地址
+	 * @param port 端口
+	 * @param master hbase主机
+	 * @param rootdir hdfs目录
 	 */
 	public HbaseConnectionPool(final PoolConfig poolConfig, final String host, final String port, final String master,
 			final String rootdir) {
@@ -106,10 +92,8 @@ public class HbaseConnectionPool extends PoolBase<HConnection> implements Connec
 	}
 
 	/**
-	 * @param poolConfig
-	 *            池配置
-	 * @param properties
-	 *            参数配置
+	 * @param poolConfig 池配置
+	 * @param properties 参数配置
 	 */
 	public HbaseConnectionPool(final PoolConfig poolConfig, final Properties properties) {
 		super(poolConfig, new HbaseConnectionFactory(properties));

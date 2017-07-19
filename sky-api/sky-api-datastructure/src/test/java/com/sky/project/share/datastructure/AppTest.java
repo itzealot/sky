@@ -1,4 +1,4 @@
-package com.sky.project.share.tool.hbase;
+package com.sky.project.share.datastructure;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
