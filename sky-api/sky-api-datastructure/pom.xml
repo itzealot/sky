@@ -9,9 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.sky.project.share</groupId>
 	<artifactId>sky-api-datastructure</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>sky-api-datastructure</name>
 	<url>http://maven.apache.org</url>
 
