@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
  * 丢弃策略，什么都不处理{@link java.util.concurrent.ThreadPoolExecutor.DiscardPolicy}<br>
  * 丢弃最老的任务，处理最新任务{@link java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy}<br>
  * 
- * 
  * @author ding.lid
  */
 public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {

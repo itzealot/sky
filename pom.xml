@@ -61,5 +61,6 @@
 		<module>sky-tools</module>
 		<module>sky-common</module>
 		<module>sky-api</module>
+		<module>sky-demos</module>
 	</modules>
 </project>
