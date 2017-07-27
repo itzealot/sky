@@ -25,5 +25,6 @@
 		<module>sky-api-kafka</module>
     <module>sky-api-datastructure</module>
     <module>sky-api-streaming</module>
+    <module>sky-api-algorithm</module>
   </modules>
 </project>

@@ -6,7 +6,6 @@ import org.apache.hadoop.hive.ql.exec.UDF;
  * Trim to null UDF
  * 
  * @author zealot
- *
  */
 public class Trim2NullUDF extends UDF {
 

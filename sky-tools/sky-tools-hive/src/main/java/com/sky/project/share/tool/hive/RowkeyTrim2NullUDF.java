@@ -6,12 +6,10 @@ import org.apache.hadoop.hive.ql.exec.UDF;
  * 过滤非法行健的UDF
  * 
  * @author zealot
- *
  */
 public class RowkeyTrim2NullUDF extends UDF {
 
 	/**
-	 * 
 	 * @param rowkey
 	 * @param mode
 	 *            r|c
@@ -83,9 +81,11 @@ public class RowkeyTrim2NullUDF extends UDF {
 			if (result == null) {
 				return null;
 			}
+
 			// 校验idTo与toType
 			return CertificationFilter.evaluate(idTo, toType) == null ? null : newRowkey;
 		}
+
 		return newRowkey;
 	}
 
